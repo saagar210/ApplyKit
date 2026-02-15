@@ -50,6 +50,8 @@ Default output base:
 - `pnpm -C ui build`
 - `cargo tauri build --debug`
 - `./scripts/verify_hygiene.sh`
+- `./scripts/clean_bloat.sh --dry-run`
+- `./scripts/clean_bloat.sh`
 
 ## Export Notes
 - Markdown bundle export is production-ready and deterministic.
