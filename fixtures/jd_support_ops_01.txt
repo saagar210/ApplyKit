@@ -1,0 +1,11 @@
+Senior Support Engineer (SaaS)
+Responsibilities:
+- Own Tier 2/3 support and drive incident response.
+- Partner with Security on audit readiness and access controls.
+- Administer Okta, MDM (Jamf/Intune), and SaaS tools.
+- Build automation/metrics to reduce repeat issues.
+
+Requirements:
+- 5+ years IT support/ops
+- Strong macOS endpoint management
+- Experience with change management and post-incident reviews

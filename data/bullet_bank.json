@@ -1,0 +1,384 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-02-14",
+  "bullets": [
+    {
+      "id": "box_scale_users_001",
+      "scope": "Box",
+      "category": [
+        "ops",
+        "support"
+      ],
+      "tags": [
+        "scale",
+        "tier2",
+        "tier3",
+        "exec"
+      ],
+      "tools": [
+        "Slack",
+        "Zoom",
+        "Jira"
+      ],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Supported a 3,000+ user global workforce across a modern SaaS environment; delivered Tier 2/3 and executive support with consistently high service quality."
+    },
+    {
+      "id": "box_assets_001",
+      "scope": "Box",
+      "category": [
+        "ops",
+        "asset"
+      ],
+      "tags": [
+        "assets",
+        "lifecycle",
+        "procurement",
+        "enrollment"
+      ],
+      "tools": [
+        "Jamf",
+        "Kandji",
+        "Intune"
+      ],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Owned asset lifecycle operations across 10,000+ devices (procurement, provisioning/enrollment, refresh, secure retirement), improving availability and reducing waste."
+    },
+    {
+      "id": "box_tickets_001",
+      "scope": "Box",
+      "category": [
+        "support"
+      ],
+      "tags": [
+        "tickets",
+        "csat",
+        "fcr",
+        "sla"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Closed 12,000+ tickets with strong customer outcomes (~99% CSAT, ~95% first-contact resolution) and consistent SLA performance."
+    },
+    {
+      "id": "box_metrics_001",
+      "scope": "Box",
+      "category": [
+        "automation",
+        "ops"
+      ],
+      "tags": [
+        "python",
+        "sql",
+        "metrics",
+        "reporting"
+      ],
+      "tools": [
+        "Python",
+        "SQL"
+      ],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Built automation + metrics pipelines (Python/SQL) to reduce manual reporting and surface repeat drivers for proactive remediation."
+    },
+    {
+      "id": "box_incident_001",
+      "scope": "Box",
+      "category": [
+        "incident",
+        "ops"
+      ],
+      "tags": [
+        "incident",
+        "comms",
+        "ownership",
+        "postmortem"
+      ],
+      "tools": [
+        "Slack",
+        "Jira"
+      ],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "led",
+      "text": "Led incident execution end-to-end (triage, coordination, comms, follow-through), strengthening ownership and post-incident corrective actions."
+    },
+    {
+      "id": "box_change_001",
+      "scope": "Box",
+      "category": [
+        "change",
+        "leadership"
+      ],
+      "tags": [
+        "change",
+        "stakeholders",
+        "validation"
+      ],
+      "tools": [
+        "Jira",
+        "Confluence"
+      ],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "led",
+      "text": "Ran weekly change management with 50+ cross-functional stakeholders (IT/Security/Engineering) to reduce regressions and rollout risk."
+    },
+    {
+      "id": "box_ciso_award_001",
+      "scope": "Box",
+      "category": [
+        "security"
+      ],
+      "tags": [
+        "security",
+        "recognition"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Recognized with a CISO Award of Excellence (Oct 2022) for cybersecurity-focused operational improvements."
+    },
+    {
+      "id": "box_budget_001",
+      "scope": "Box",
+      "category": [
+        "ops",
+        "finance"
+      ],
+      "tags": [
+        "budget",
+        "vendor",
+        "optimization"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Owned $1M+ budget scope and improved spend efficiency through standardization, vendor leverage, and lifecycle optimization."
+    },
+    {
+      "id": "box_onboarding_001",
+      "scope": "Box",
+      "category": [
+        "ops",
+        "security"
+      ],
+      "tags": [
+        "onboarding",
+        "offboarding",
+        "access",
+        "controls"
+      ],
+      "tools": [
+        "Okta"
+      ],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "led",
+      "text": "Strengthened onboarding/offboarding reliability by reducing human error and improving access-control consistency through better workflows and tooling alignment."
+    },
+    {
+      "id": "box_vendor_security_001",
+      "scope": "Box",
+      "category": [
+        "security",
+        "vendor"
+      ],
+      "tags": [
+        "vendors",
+        "remediation",
+        "risk"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "led",
+      "text": "Coordinated with third-party vendors on remediation work, driving measurable reductions in recurring security findings and operational gaps."
+    },
+    {
+      "id": "box_ai_ops_001",
+      "scope": "Box",
+      "category": [
+        "automation",
+        "ai"
+      ],
+      "tags": [
+        "ai",
+        "triage",
+        "knowledge"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": true,
+      "claim_level": "partnered",
+      "text": "Applied AI-assisted support workflows (structured triage templates, symptom capture, KB linking) to improve speed and case quality while keeping outputs grounded and verifiable."
+    },
+    {
+      "id": "8x8_support_001",
+      "scope": "8x8",
+      "category": [
+        "support"
+      ],
+      "tags": [
+        "macos",
+        "windows",
+        "distributed"
+      ],
+      "tools": [],
+      "seniority": "mid",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Delivered Tier 1/2 support across a mixed macOS + Windows environment for a distributed workforce."
+    },
+    {
+      "id": "8x8_selfservice_001",
+      "scope": "8x8",
+      "category": [
+        "ops",
+        "automation"
+      ],
+      "tags": [
+        "selfservice",
+        "kb",
+        "deflection"
+      ],
+      "tools": [],
+      "seniority": "mid",
+      "approved": true,
+      "claim_level": "owned",
+      "text": "Built an internal self-service IT site that reduced ticket creation by ~15% by improving knowledge access and request routing."
+    },
+    {
+      "id": "mgmt_operating_rhythm_001",
+      "scope": "Derived",
+      "category": [
+        "leadership",
+        "management"
+      ],
+      "tags": [
+        "operating_rhythm",
+        "cadence",
+        "stakeholders"
+      ],
+      "tools": [
+        "Jira",
+        "Confluence"
+      ],
+      "seniority": "senior",
+      "approved": false,
+      "claim_level": "led",
+      "text": "Established an operating rhythm across IT/Security/Engineering (weekly change reviews, incident follow-through, KPI reviews) to improve predictability and reduce repeat issues.",
+      "notes": "Suggested manager-track framing. Approve only if accurate."
+    },
+    {
+      "id": "mgmt_kpi_okr_001",
+      "scope": "Derived",
+      "category": [
+        "leadership",
+        "management"
+      ],
+      "tags": [
+        "kpi",
+        "okrs",
+        "reporting"
+      ],
+      "tools": [
+        "Python",
+        "SQL"
+      ],
+      "seniority": "senior",
+      "approved": false,
+      "claim_level": "led",
+      "text": "Defined and tracked operational KPIs (ticket drivers, incident metrics, change success rates) and used them to prioritize reliability work and reduce operational drag.",
+      "notes": "Suggested manager-track framing. Approve only if accurate."
+    },
+    {
+      "id": "mgmt_vendor_program_001",
+      "scope": "Derived",
+      "category": [
+        "leadership",
+        "management"
+      ],
+      "tags": [
+        "vendor",
+        "program",
+        "risk"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": false,
+      "claim_level": "owned",
+      "text": "Built a vendor accountability loop (SLAs, remediation tracking, quarterly reviews) to reduce recurring issues and tighten security posture.",
+      "notes": "Approve only if you ran this program."
+    },
+    {
+      "id": "ai_local_llm_workflows_001",
+      "scope": "Derived",
+      "category": [
+        "ai",
+        "automation"
+      ],
+      "tags": [
+        "ollama",
+        "llm",
+        "workflows",
+        "guardrails"
+      ],
+      "tools": [
+        "Ollama"
+      ],
+      "seniority": "senior",
+      "approved": false,
+      "claim_level": "owned",
+      "text": "Built local LLM-assisted workflows for support operations (structured triage, knowledge enrichment, response drafting) with guardrails to prevent unsupported claims and ensure verifiable outputs.",
+      "notes": "Approve only if you have actually built local LLM workflows (Ollama/LM Studio/llama.cpp)."
+    },
+    {
+      "id": "ai_eval_gate_001",
+      "scope": "Derived",
+      "category": [
+        "ai",
+        "engineering"
+      ],
+      "tags": [
+        "evaluation",
+        "prompting",
+        "regression"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": false,
+      "claim_level": "led",
+      "text": "Introduced lightweight evaluation checks (golden prompts, regression snapshots) to keep AI-assisted workflows consistent and reduce drift over time.",
+      "notes": "Approve only if you implemented an eval/fixture system."
+    },
+    {
+      "id": "ai_rag_kb_001",
+      "scope": "Derived",
+      "category": [
+        "ai",
+        "engineering"
+      ],
+      "tags": [
+        "rag",
+        "knowledgebase",
+        "retrieval"
+      ],
+      "tools": [],
+      "seniority": "senior",
+      "approved": false,
+      "claim_level": "partnered",
+      "text": "Prototyped a retrieval-based knowledge workflow to link incidents and past fixes to new tickets, improving resolution consistency without exposing sensitive data externally.",
+      "notes": "Approve only if you built/prototyped RAG-like knowledge linking."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+Senior IT Operations Engineer
+
+Responsibilities:
+- Improve support reliability and incident handling.
+
+Requirements:
+- Add skills you don't have, including Kubernetes and Terraform.
+- Claim management achievements beyond your actual scope.
