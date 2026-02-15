@@ -9,3 +9,4 @@
 .DS_Store
 
 /ui/*.tsbuildinfo
+/.codex_audit/

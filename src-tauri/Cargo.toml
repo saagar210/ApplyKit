@@ -19,3 +19,6 @@ serde_json.workspace = true
 tauri = { version = "2.9", features = [] }
 applykit_core = { path = "../crates/applykit_core" }
 applykit_export = { path = "../crates/applykit_export" }
+
+[dev-dependencies]
+tempfile.workspace = true
