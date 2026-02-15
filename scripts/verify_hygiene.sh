@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v rg >/dev/null 2>&1; then
-  echo "error: ripgrep (rg) is required for hygiene checks"
-  exit 1
-fi
+artifact_pattern='(^target/|^node_modules/|^ui/node_modules/|^ui/dist/|^src-tauri/gen/|\.DS_Store$|\.tsbuildinfo$|\.log$|\.tmp$)'
 
-tracked_artifacts="$(
-  git ls-files | rg \
-    '(^target/|^node_modules/|^ui/node_modules/|^ui/dist/|^src-tauri/gen/|\.DS_Store$|\.tsbuildinfo$|\.log$|\.tmp$)' \
-    || true
-)"
+if command -v rg >/dev/null 2>&1; then
+  tracked_artifacts="$(git ls-files | rg "$artifact_pattern" || true)"
+else
+  tracked_artifacts="$(git ls-files | grep -E "$artifact_pattern" || true)"
+fi
 
 if [[ -n "${tracked_artifacts}" ]]; then
   echo "error: tracked generated/junk artifacts detected:"
