@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: "0 13 * * 1"
   workflow_dispatch:
 
 jobs:
@@ -42,6 +44,9 @@ jobs:
 
       - name: Rust tests
         run: cargo test
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
 
       - name: Dependency audit (strict)
         run: cargo audit -D warnings
