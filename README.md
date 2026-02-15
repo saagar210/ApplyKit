@@ -44,7 +44,7 @@ Default output base:
 ## Verification
 - `cargo test -p applykit_core`
 - `cargo test`
-- `cargo audit`
+- `cargo audit -D warnings`
 - `pnpm -C ui lint`
 - `pnpm -C ui test`
 - `pnpm -C ui build`
