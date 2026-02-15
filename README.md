@@ -44,10 +44,12 @@ Default output base:
 ## Verification
 - `cargo test -p applykit_core`
 - `cargo test`
+- `cargo audit`
 - `pnpm -C ui lint`
 - `pnpm -C ui test`
 - `pnpm -C ui build`
 - `cargo tauri build --debug`
+- `./scripts/verify_hygiene.sh`
 
 ## Export Notes
 - Markdown bundle export is production-ready and deterministic.

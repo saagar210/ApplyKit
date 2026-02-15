@@ -17,6 +17,7 @@ use applykit_core::{generate_packet, GenerateOptions};
 use applykit_export::{export_docx, export_markdown_bundle, export_pdf};
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
+use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Deserialize)]
@@ -431,9 +432,159 @@ fn to_packet_detail_response(detail: applykit_core::types::PacketDetail) -> Pack
     }
 }
 
+fn repo_root() -> Result<PathBuf, String> {
+    std::env::current_dir().map_err(|e| format!("reading repo root: {e}"))
+}
+
+fn configured_output_base(repo_root: &Path) -> Result<PathBuf, String> {
+    let cfg = load_config(repo_root).map_err(|e| e.to_string())?;
+    let base = resolve_output_base(&cfg.output.base_dir);
+    std::fs::create_dir_all(&base)
+        .map_err(|e| format!("creating output base {}: {e}", base.display()))?;
+    base.canonicalize().map_err(|e| format!("canonicalizing output base {}: {e}", base.display()))
+}
+
+fn canonicalize_candidate(path: &Path, must_exist: bool, label: &str) -> Result<PathBuf, String> {
+    let absolute = if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        std::env::current_dir().map_err(|e| format!("reading cwd for {label}: {e}"))?.join(path)
+    };
+
+    if must_exist || absolute.exists() {
+        return absolute
+            .canonicalize()
+            .map_err(|e| format!("canonicalizing {label} {}: {e}", absolute.display()));
+    }
+
+    let mut cursor = absolute.as_path();
+    let mut missing = Vec::new();
+    while !cursor.exists() {
+        let Some(segment) = cursor.file_name() else {
+            return Err(format!("{label} has no existing ancestor: {}", absolute.display()));
+        };
+        if segment == OsStr::new(".") || segment == OsStr::new("..") {
+            return Err(format!("{label} cannot contain '.' or '..' segments"));
+        }
+        missing.push(segment.to_os_string());
+        cursor = cursor
+            .parent()
+            .ok_or_else(|| format!("{label} has no parent: {}", absolute.display()))?;
+    }
+
+    if !cursor.is_dir() {
+        return Err(format!("{label} parent must be a directory: {}", cursor.display()));
+    }
+
+    let mut canonical = cursor
+        .canonicalize()
+        .map_err(|e| format!("canonicalizing parent for {label} {}: {e}", cursor.display()))?;
+    for segment in missing.iter().rev() {
+        canonical.push(segment);
+    }
+    Ok(canonical)
+}
+
+fn ensure_within_base(base: &Path, candidate: &Path, label: &str) -> Result<(), String> {
+    if candidate == base || candidate.starts_with(base) {
+        return Ok(());
+    }
+    Err(format!("{label} must stay under configured output base: {}", base.display()))
+}
+
+fn resolve_scoped_output_base(repo_root: &Path, outdir: Option<String>) -> Result<PathBuf, String> {
+    let base = configured_output_base(repo_root)?;
+    match outdir {
+        Some(raw) => {
+            let scoped = canonicalize_candidate(Path::new(&raw), false, "outdir")?;
+            ensure_within_base(&base, &scoped, "outdir")?;
+            Ok(scoped)
+        }
+        None => Ok(base),
+    }
+}
+
+fn resolve_existing_output_path(
+    repo_root: &Path,
+    raw_path: &str,
+    label: &str,
+) -> Result<PathBuf, String> {
+    let base = configured_output_base(repo_root)?;
+    let path = canonicalize_candidate(Path::new(raw_path), true, label)?;
+    ensure_within_base(&base, &path, label)?;
+    Ok(path)
+}
+
+fn resolve_packet_dir(repo_root: &Path, raw_path: &str) -> Result<PathBuf, String> {
+    let packet_dir = resolve_existing_output_path(repo_root, raw_path, "packet_dir")?;
+    if !packet_dir.is_dir() {
+        return Err(format!("packet_dir must be a directory: {}", packet_dir.display()));
+    }
+    if !packet_dir.join("ReviewData.json").exists() {
+        return Err(format!("packet_dir is missing ReviewData.json: {}", packet_dir.display()));
+    }
+    Ok(packet_dir)
+}
+
+fn resolve_export_out_dir(
+    repo_root: &Path,
+    packet_dir: &Path,
+    out_dir: Option<String>,
+) -> Result<PathBuf, String> {
+    let base = configured_output_base(repo_root)?;
+    let candidate = match out_dir {
+        Some(raw) => canonicalize_candidate(Path::new(&raw), false, "out_dir")?,
+        None => packet_dir.parent().unwrap_or(Path::new(".")).to_path_buf().join("exports"),
+    };
+    ensure_within_base(&base, &candidate, "out_dir")?;
+    Ok(candidate)
+}
+
+fn sanitize_export_file_name(
+    file_name: Option<String>,
+    default_name: String,
+    required_extension: &str,
+) -> Result<String, String> {
+    let mut raw = file_name.unwrap_or(default_name);
+    raw = raw.trim().to_string();
+    if raw.is_empty() {
+        return Err("file_name cannot be empty".to_string());
+    }
+
+    let path = Path::new(&raw);
+    if path.components().count() != 1 || path.file_name().is_none() {
+        return Err("file_name must not include path separators".to_string());
+    }
+
+    if !raw.to_ascii_lowercase().ends_with(&required_extension.to_ascii_lowercase()) {
+        raw.push_str(required_extension);
+    }
+
+    Ok(raw)
+}
+
+fn required_trimmed_field(name: &str, value: String) -> Result<String, String> {
+    let trimmed = value.trim();
+    if trimmed.is_empty() {
+        return Err(format!("{name} is required"));
+    }
+    Ok(trimmed.to_string())
+}
+
+fn ensure_non_empty_text(name: &str, value: &str) -> Result<(), String> {
+    if value.trim().is_empty() {
+        return Err(format!("{name} is required"));
+    }
+    Ok(())
+}
+
 #[tauri::command]
 fn generate_packet_cmd(input: GeneratePacketInput) -> Result<GeneratePacketResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
+    let company = required_trimmed_field("company", input.company)?;
+    let role = required_trimmed_field("role", input.role)?;
+    let source = required_trimmed_field("source", input.source)?;
+    ensure_non_empty_text("jdText", &input.jd_text)?;
     let baseline =
         input.baseline.parse::<Baseline>().map_err(|e| format!("invalid baseline: {e}"))?;
 
@@ -449,15 +600,19 @@ fn generate_packet_cmd(input: GeneratePacketInput) -> Result<GeneratePacketRespo
         Some(value) => Some(value.parse::<Track>().map_err(|e| format!("invalid track: {e}"))?),
         None => None,
     };
+    let scoped_outdir = match input.outdir {
+        Some(raw) => Some(resolve_scoped_output_base(&repo_root, Some(raw))?),
+        None => None,
+    };
 
     let result = generate_packet(
         GenerateInput {
-            company: input.company,
-            role: input.role,
-            source: input.source,
+            company,
+            role,
+            source,
             baseline,
             jd_text: input.jd_text,
-            outdir: input.outdir.map(PathBuf::from),
+            outdir: scoped_outdir,
             run_date,
             track_override,
             allow_unapproved: input.allow_unapproved.unwrap_or(false),
@@ -499,17 +654,14 @@ fn generate_packet_cmd(input: GeneratePacketInput) -> Result<GeneratePacketRespo
 
 #[tauri::command]
 fn get_packet_detail_cmd(input: PacketDetailInput) -> Result<PacketDetailResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
-    let cfg = load_config(&repo_root).map_err(|e| e.to_string())?;
-    let base = input
-        .outdir
-        .map(PathBuf::from)
-        .unwrap_or_else(|| resolve_output_base(&cfg.output.base_dir));
+    let repo_root = repo_root()?;
+    let base = resolve_scoped_output_base(&repo_root, input.outdir)?;
 
     let detail = if let Some(job_id) = input.job_id {
         read_packet_detail_by_job_id(&base, &job_id).map_err(|e| e.to_string())?
     } else if let Some(packet_dir) = input.packet_dir {
-        read_packet_detail(Path::new(&packet_dir)).map_err(|e| e.to_string())?
+        let scoped_packet_dir = resolve_packet_dir(&repo_root, &packet_dir)?;
+        read_packet_detail(&scoped_packet_dir).map_err(|e| e.to_string())?
     } else {
         return Err("jobId or packetDir is required".to_string());
     };
@@ -519,12 +671,8 @@ fn get_packet_detail_cmd(input: PacketDetailInput) -> Result<PacketDetailRespons
 
 #[tauri::command]
 fn list_jobs_cmd(input: Option<ListJobsInput>) -> Result<ListJobsResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
-    let cfg = load_config(&repo_root).map_err(|e| e.to_string())?;
-    let base = input
-        .and_then(|i| i.outdir)
-        .map(PathBuf::from)
-        .unwrap_or_else(|| resolve_output_base(&cfg.output.base_dir));
+    let repo_root = repo_root()?;
+    let base = resolve_scoped_output_base(&repo_root, input.and_then(|i| i.outdir))?;
 
     let db_path = base.join("applykit.db");
     let jobs = list_jobs(&db_path)
@@ -557,12 +705,8 @@ fn list_jobs_cmd(input: Option<ListJobsInput>) -> Result<ListJobsResponse, Strin
 
 #[tauri::command]
 fn update_job_status_cmd(input: UpdateJobStatusInput) -> Result<UpdateJobStatusResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
-    let cfg = load_config(&repo_root).map_err(|e| e.to_string())?;
-    let base = input
-        .outdir
-        .map(PathBuf::from)
-        .unwrap_or_else(|| resolve_output_base(&cfg.output.base_dir));
+    let repo_root = repo_root()?;
+    let base = resolve_scoped_output_base(&repo_root, input.outdir.clone())?;
     let db_path = base.join("applykit.db");
     let status = input.status.to_ascii_lowercase();
 
@@ -586,12 +730,8 @@ fn update_job_status_cmd(input: UpdateJobStatusInput) -> Result<UpdateJobStatusR
 
 #[tauri::command]
 fn insights_cmd(input: Option<ListJobsInput>) -> Result<InsightsResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
-    let cfg = load_config(&repo_root).map_err(|e| e.to_string())?;
-    let base = input
-        .and_then(|i| i.outdir)
-        .map(PathBuf::from)
-        .unwrap_or_else(|| resolve_output_base(&cfg.output.base_dir));
+    let repo_root = repo_root()?;
+    let base = resolve_scoped_output_base(&repo_root, input.and_then(|i| i.outdir))?;
 
     let db_path = base.join("applykit.db");
     let jobs = list_jobs(&db_path).map_err(|e| e.to_string())?;
@@ -605,10 +745,9 @@ fn insights_cmd(input: Option<ListJobsInput>) -> Result<InsightsResponse, String
 
 #[tauri::command]
 fn export_markdown_cmd(input: ExportInput) -> Result<ExportResponse, String> {
-    let packet_dir = PathBuf::from(&input.packet_dir);
-    let out_dir = input.out_dir.map(PathBuf::from).unwrap_or_else(|| {
-        packet_dir.parent().unwrap_or(Path::new(".")).to_path_buf().join("exports")
-    });
+    let repo_root = repo_root()?;
+    let packet_dir = resolve_packet_dir(&repo_root, &input.packet_dir)?;
+    let out_dir = resolve_export_out_dir(&repo_root, &packet_dir, input.out_dir)?;
     let output = export_markdown_bundle(&packet_dir, &out_dir).map_err(|e| e.to_string())?;
     Ok(ExportResponse {
         ok: true,
@@ -619,20 +758,18 @@ fn export_markdown_cmd(input: ExportInput) -> Result<ExportResponse, String> {
 
 #[tauri::command]
 fn export_docx_cmd(input: ExportInput) -> Result<ExportResponse, String> {
-    let packet_dir = PathBuf::from(&input.packet_dir);
-    let out_dir = input.out_dir.map(PathBuf::from).unwrap_or_else(|| {
-        packet_dir.parent().unwrap_or(Path::new(".")).to_path_buf().join("exports")
-    });
+    let repo_root = repo_root()?;
+    let packet_dir = resolve_packet_dir(&repo_root, &input.packet_dir)?;
+    let out_dir = resolve_export_out_dir(&repo_root, &packet_dir, input.out_dir)?;
     std::fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
-    let file_name = input.file_name.unwrap_or_else(|| {
-        format!(
-            "{}.docx",
-            packet_dir
-                .file_name()
-                .map(|n| n.to_string_lossy().to_string())
-                .unwrap_or_else(|| "packet".to_string())
-        )
-    });
+    let default_name = format!(
+        "{}.docx",
+        packet_dir
+            .file_name()
+            .map(|n| n.to_string_lossy().to_string())
+            .unwrap_or_else(|| "packet".to_string())
+    );
+    let file_name = sanitize_export_file_name(input.file_name, default_name, ".docx")?;
     let out_path = out_dir.join(file_name);
 
     match export_docx(&packet_dir, &out_path) {
@@ -647,20 +784,18 @@ fn export_docx_cmd(input: ExportInput) -> Result<ExportResponse, String> {
 
 #[tauri::command]
 fn export_pdf_cmd(input: ExportInput) -> Result<ExportResponse, String> {
-    let packet_dir = PathBuf::from(&input.packet_dir);
-    let out_dir = input.out_dir.map(PathBuf::from).unwrap_or_else(|| {
-        packet_dir.parent().unwrap_or(Path::new(".")).to_path_buf().join("exports")
-    });
+    let repo_root = repo_root()?;
+    let packet_dir = resolve_packet_dir(&repo_root, &input.packet_dir)?;
+    let out_dir = resolve_export_out_dir(&repo_root, &packet_dir, input.out_dir)?;
     std::fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
-    let file_name = input.file_name.unwrap_or_else(|| {
-        format!(
-            "{}.pdf",
-            packet_dir
-                .file_name()
-                .map(|n| n.to_string_lossy().to_string())
-                .unwrap_or_else(|| "packet".to_string())
-        )
-    });
+    let default_name = format!(
+        "{}.pdf",
+        packet_dir
+            .file_name()
+            .map(|n| n.to_string_lossy().to_string())
+            .unwrap_or_else(|| "packet".to_string())
+    );
+    let file_name = sanitize_export_file_name(input.file_name, default_name, ".pdf")?;
     let out_path = out_dir.join(file_name);
 
     match export_pdf(&packet_dir, &out_path) {
@@ -679,7 +814,7 @@ fn export_pdf_cmd(input: ExportInput) -> Result<ExportResponse, String> {
 
 #[tauri::command]
 fn get_settings_cmd() -> Result<SettingsResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let cfg = load_config(&repo_root).map_err(|e| e.to_string())?;
     let runtime = load_runtime_settings(&repo_root).map_err(|e| e.to_string())?;
     let merged = merge_config_with_runtime(cfg, &runtime);
@@ -696,7 +831,7 @@ fn get_settings_cmd() -> Result<SettingsResponse, String> {
 
 #[tauri::command]
 fn save_settings_cmd(input: SaveSettingsInput) -> Result<SettingsResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let runtime = RuntimeSettings {
         allow_unapproved: input.allow_unapproved,
         llm_enabled: Some(input.llm_enabled),
@@ -711,7 +846,7 @@ fn save_settings_cmd(input: SaveSettingsInput) -> Result<SettingsResponse, Strin
 
 #[tauri::command]
 fn get_banks_preview_cmd() -> Result<BanksPreviewResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let preview = load_banks_preview(&repo_root).map_err(|e| e.to_string())?;
     Ok(BanksPreviewResponse {
         bullet_bank_json: preview.bullet_bank_json,
@@ -725,7 +860,7 @@ fn get_banks_preview_cmd() -> Result<BanksPreviewResponse, String> {
 
 #[tauri::command]
 fn get_templates_preview_cmd() -> Result<TemplatesPreviewResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let preview = load_templates_preview(&repo_root).map_err(|e| e.to_string())?;
     Ok(TemplatesPreviewResponse {
         resume_1pg_base: preview.resume_1pg_base,
@@ -738,7 +873,7 @@ fn get_templates_preview_cmd() -> Result<TemplatesPreviewResponse, String> {
 
 #[tauri::command]
 fn set_bullet_approved_cmd(input: SetBulletApprovedInput) -> Result<MutationResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let resp = set_bullet_approved_value(&repo_root, &input.id, input.approved)
         .map_err(|e| e.to_string())?;
     Ok(to_mutation_response(resp))
@@ -746,7 +881,7 @@ fn set_bullet_approved_cmd(input: SetBulletApprovedInput) -> Result<MutationResp
 
 #[tauri::command]
 fn set_skill_approved_cmd(input: SetSkillApprovedInput) -> Result<MutationResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let resp = set_skill_approved_value(&repo_root, &input.name, input.approved)
         .map_err(|e| e.to_string())?;
     Ok(to_mutation_response(resp))
@@ -754,7 +889,7 @@ fn set_skill_approved_cmd(input: SetSkillApprovedInput) -> Result<MutationRespon
 
 #[tauri::command]
 fn set_skill_level_cmd(input: SetSkillLevelInput) -> Result<MutationResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let resp =
         set_skill_level_value(&repo_root, &input.name, &input.level).map_err(|e| e.to_string())?;
     Ok(to_mutation_response(resp))
@@ -762,7 +897,7 @@ fn set_skill_level_cmd(input: SetSkillLevelInput) -> Result<MutationResponse, St
 
 #[tauri::command]
 fn save_bullet_text_cmd(input: SaveBulletTextInput) -> Result<MutationResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let resp =
         save_bullet_text_value(&repo_root, &input.id, &input.text).map_err(|e| e.to_string())?;
     Ok(to_mutation_response(resp))
@@ -770,7 +905,7 @@ fn save_bullet_text_cmd(input: SaveBulletTextInput) -> Result<MutationResponse, 
 
 #[tauri::command]
 fn save_template_cmd(input: SaveTemplateInput) -> Result<MutationResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let resp = save_template_value(&repo_root, &input.template_key, &input.content)
         .map_err(|e| e.to_string())?;
     Ok(to_mutation_response(resp))
@@ -778,7 +913,7 @@ fn save_template_cmd(input: SaveTemplateInput) -> Result<MutationResponse, Strin
 
 #[tauri::command]
 fn create_bullet_cmd(input: CreateBulletInput) -> Result<MutationResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let resp = create_bullet_value(
         &repo_root,
         applykit_core::CreateBulletInput {
@@ -799,7 +934,7 @@ fn create_bullet_cmd(input: CreateBulletInput) -> Result<MutationResponse, Strin
 
 #[tauri::command]
 fn create_skill_cmd(input: CreateSkillInput) -> Result<MutationResponse, String> {
-    let repo_root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let repo_root = repo_root()?;
     let resp =
         create_skill_value(&repo_root, &input.name, &input.level, input.approved.unwrap_or(false))
             .map_err(|e| e.to_string())?;
@@ -808,9 +943,10 @@ fn create_skill_cmd(input: CreateSkillInput) -> Result<MutationResponse, String>
 
 #[tauri::command]
 fn open_output_folder(path: String) -> Result<(), String> {
-    let p = PathBuf::from(path);
-    if !p.exists() {
-        return Err("path does not exist".to_string());
+    let repo_root = repo_root()?;
+    let p = resolve_existing_output_path(&repo_root, &path, "path")?;
+    if !p.is_dir() {
+        return Err(format!("path must be a directory: {}", p.display()));
     }
 
     let status = {
@@ -863,4 +999,92 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn write_test_config(repo_root: &Path, base_dir: &Path) {
+        let config_dir = repo_root.join("config");
+        std::fs::create_dir_all(&config_dir).expect("create config dir");
+        let escaped_base = base_dir.to_string_lossy().replace('\\', "\\\\");
+        let content = format!(
+            r#"[output]
+base_dir = "{escaped_base}"
+date_format = "%Y-%m-%d"
+
+[determinism]
+sort_tools = "jd_priority_then_alpha"
+sort_bullets = "score_then_id"
+max_resume_edits = 3
+max_bullet_swaps = 2
+
+[scoring]
+role_match = 30
+stack_match = 30
+scale_match = 20
+rigor_match = 10
+signal_boost = 10
+
+[tracks]
+support_ops = []
+identity_endpoint = []
+security_compliance_ops = []
+automation_aiops = []
+managerish = []
+
+[llm]
+enabled = false
+provider = "ollama"
+base_url = "http://127.0.0.1:11434"
+model = "none"
+allowed_tasks = []
+"#
+        );
+        std::fs::write(config_dir.join("applykit.toml"), content).expect("write config");
+    }
+
+    #[test]
+    fn sanitize_export_file_name_rejects_path_segments() {
+        let err = sanitize_export_file_name(
+            Some("../escape".to_string()),
+            "packet.docx".to_string(),
+            ".docx",
+        )
+        .expect_err("path separators should fail");
+        assert!(err.contains("path separators"));
+    }
+
+    #[test]
+    fn sanitize_export_file_name_appends_extension() {
+        let file = sanitize_export_file_name(
+            Some("packet_export".to_string()),
+            "packet.docx".to_string(),
+            ".docx",
+        )
+        .expect("name");
+        assert_eq!(file, "packet_export.docx");
+    }
+
+    #[test]
+    fn resolve_scoped_output_base_rejects_escape() {
+        let repo = tempfile::tempdir().expect("repo");
+        let base = repo.path().join("allowed");
+        let outside = repo.path().join("outside");
+        std::fs::create_dir_all(&base).expect("base");
+        std::fs::create_dir_all(&outside).expect("outside");
+        write_test_config(repo.path(), &base);
+
+        let err =
+            resolve_scoped_output_base(repo.path(), Some(outside.to_string_lossy().to_string()))
+                .expect_err("outside outdir should fail");
+        assert!(err.contains("must stay under configured output base"));
+    }
+
+    #[test]
+    fn required_trimmed_field_rejects_blank() {
+        let err = required_trimmed_field("company", "   ".to_string()).expect_err("blank");
+        assert!(err.contains("company is required"));
+    }
 }

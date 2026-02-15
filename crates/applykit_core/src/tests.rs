@@ -83,6 +83,24 @@ mod suite {
         tmp
     }
 
+    fn deterministic_runtime_settings() -> RuntimeSettings {
+        RuntimeSettings {
+            allow_unapproved: false,
+            llm_enabled: Some(false),
+            llm_provider: None,
+            llm_base_url: None,
+            llm_model: None,
+            llm_allowed_tasks: None,
+        }
+    }
+
+    fn prepare_temp_repo_with_deterministic_runtime() -> tempfile::TempDir {
+        let tmp = prepare_temp_repo();
+        save_runtime_settings(tmp.path(), &deterministic_runtime_settings())
+            .expect("save deterministic runtime settings");
+        tmp
+    }
+
     fn spawn_openai_compat_server(content: &'static str) -> (String, Arc<AtomicUsize>) {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("bind");
         listener.set_nonblocking(true).expect("nonblocking");
@@ -123,6 +141,7 @@ mod suite {
     #[test]
     fn snapshot_support_packet() {
         let outdir = tempfile::tempdir().expect("tmpdir");
+        let temp_repo = prepare_temp_repo_with_deterministic_runtime();
         let result = generate_packet(
             GenerateInput {
                 company: "Acme".to_string(),
@@ -135,7 +154,7 @@ mod suite {
                 track_override: None,
                 allow_unapproved: false,
             },
-            GenerateOptions { repo_root: repo_root() },
+            GenerateOptions { repo_root: temp_repo.path().to_path_buf() },
         )
         .expect("generate");
 
@@ -155,6 +174,7 @@ mod suite {
     #[test]
     fn snapshot_automation_packet() {
         let outdir = tempfile::tempdir().expect("tmpdir");
+        let temp_repo = prepare_temp_repo_with_deterministic_runtime();
         let result = generate_packet(
             GenerateInput {
                 company: "Acme".to_string(),
@@ -167,7 +187,7 @@ mod suite {
                 track_override: None,
                 allow_unapproved: false,
             },
-            GenerateOptions { repo_root: repo_root() },
+            GenerateOptions { repo_root: temp_repo.path().to_path_buf() },
         )
         .expect("generate");
 
@@ -187,6 +207,7 @@ mod suite {
     #[test]
     fn snapshot_security_packet() {
         let outdir = tempfile::tempdir().expect("tmpdir");
+        let temp_repo = prepare_temp_repo_with_deterministic_runtime();
         let result = generate_packet(
             GenerateInput {
                 company: "Acme".to_string(),
@@ -199,7 +220,7 @@ mod suite {
                 track_override: None,
                 allow_unapproved: false,
             },
-            GenerateOptions { repo_root: repo_root() },
+            GenerateOptions { repo_root: temp_repo.path().to_path_buf() },
         )
         .expect("generate");
 
@@ -219,6 +240,7 @@ mod suite {
     #[test]
     fn deterministic_repeatable_output() {
         let outdir = tempfile::tempdir().expect("tmpdir");
+        let temp_repo = prepare_temp_repo_with_deterministic_runtime();
         let input = GenerateInput {
             company: "Acme".to_string(),
             role: "IT Operations Engineer".to_string(),
@@ -231,10 +253,14 @@ mod suite {
             allow_unapproved: false,
         };
 
-        let first = generate_packet(input.clone(), GenerateOptions { repo_root: repo_root() })
-            .expect("first");
+        let first = generate_packet(
+            input.clone(),
+            GenerateOptions { repo_root: temp_repo.path().to_path_buf() },
+        )
+        .expect("first");
         let second =
-            generate_packet(input, GenerateOptions { repo_root: repo_root() }).expect("second");
+            generate_packet(input, GenerateOptions { repo_root: temp_repo.path().to_path_buf() })
+                .expect("second");
 
         assert_eq!(first.resume_1pg, second.resume_1pg);
         assert_eq!(first.fit.total, second.fit.total);
@@ -454,6 +480,7 @@ Requirements:
     #[test]
     fn summarize_jd_parse_failure_falls_back_to_deterministic() {
         let temp_repo = prepare_temp_repo();
+        let deterministic_repo = prepare_temp_repo_with_deterministic_runtime();
         let outdir = tempfile::tempdir().expect("tmp outdir");
         let (base_url, call_count) = spawn_openai_compat_server("not valid json");
 
@@ -482,7 +509,7 @@ Requirements:
                 track_override: None,
                 allow_unapproved: false,
             },
-            GenerateOptions { repo_root: repo_root() },
+            GenerateOptions { repo_root: deterministic_repo.path().to_path_buf() },
         )
         .expect("baseline generate");
 
@@ -515,6 +542,7 @@ Requirements:
     #[test]
     fn summarize_jd_truth_violation_falls_back_to_deterministic() {
         let temp_repo = prepare_temp_repo();
+        let deterministic_repo = prepare_temp_repo_with_deterministic_runtime();
         let outdir = tempfile::tempdir().expect("tmp outdir");
         let (base_url, call_count) = spawn_openai_compat_server(
             r#"{"keywords":["incident"],"requirements":[],"tools":["Kubernetes"],"scale_signals":[],"rigor_signals":[]}"#,
@@ -545,7 +573,7 @@ Requirements:
                 track_override: None,
                 allow_unapproved: false,
             },
-            GenerateOptions { repo_root: repo_root() },
+            GenerateOptions { repo_root: deterministic_repo.path().to_path_buf() },
         )
         .expect("baseline generate");
 
