@@ -1,8 +1,7 @@
-# Source: .github/workflows/ci.yml
+# Source: .github/workflows/ci.yml (dependency audit enforced in codex workflow dependency job)
 cargo fmt --all --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test
-cargo audit -D warnings
 pnpm -C ui lint
 pnpm -C ui test
 pnpm -C ui build
