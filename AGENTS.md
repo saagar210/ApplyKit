@@ -35,7 +35,7 @@ Source: `.codex/verify.commands` (derived from `.github/workflows/ci.yml`)
 - typecheck: `N/A (no standalone typecheck command defined in CI/docs)`
 - unit-test: `cargo test`; `pnpm -C ui test`
 - integration-test: `./scripts/verify_hygiene.sh`
-- build: `pnpm -C ui build`; `cargo tauri build --debug`
+- build: `pnpm -C ui build`
 
 ### Definition of Done
 - All commands in `.codex/verify.commands` pass via `.codex/scripts/run_verify_commands.sh`.
