@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-artifact_pattern='(^target/|^node_modules/|^ui/node_modules/|^ui/dist/|^src-tauri/gen/|\.DS_Store$|\.tsbuildinfo$|\.log$|\.tmp$)'
+artifact_pattern='(^target/|^node_modules/|^ui/node_modules/|^ui/dist/|^src-tauri/target/|^src-tauri/gen/|^coverage/|^\.cache/|^\.turbo/|^\.codex_audit/|^\.idea/|^\.vscode/|(^|/)\.DS_Store$|(^|/)Thumbs\.db$|(^|/)\._[^/]+$|\.tsbuildinfo$|\.eslintcache$|\.log$|\.tmp$)'
 
 if command -v rg >/dev/null 2>&1; then
   tracked_artifacts="$(git ls-files | rg "$artifact_pattern" || true)"

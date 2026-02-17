@@ -34,12 +34,30 @@ Default output base:
 - `config/applykit.toml` -> `output.base_dir` (used when `--outdir` is omitted).
 
 ## Run Desktop UI
-- Dev mode:
-  - `pnpm -C ui dev`
-  - In another shell: `cargo tauri dev`
+- Normal dev mode:
+  - `cargo tauri dev`
+    - `src-tauri/tauri.conf.json` runs `pnpm -C ../ui dev` via `beforeDevCommand`.
+- Lean dev mode (low disk):
+  - `./scripts/dev_lean.sh`
+    - Uses temporary cache/build locations (for example Rust `target`) and cleans heavy artifacts when the app exits.
 - Production build:
   - `pnpm -C ui build`
   - `cargo tauri build --debug`
+
+## Disk Usage + Cleanup
+- Heavy build artifacts only (fast cleanup, keep dependencies for speed):
+  - `./scripts/clean_heavy_artifacts.sh`
+- Full local reproducible cache cleanup (maximum disk reclaim; slower next startup):
+  - `./scripts/clean_local_caches.sh`
+- Dry-run either cleanup script:
+  - `./scripts/clean_heavy_artifacts.sh --dry-run`
+  - `./scripts/clean_local_caches.sh --dry-run`
+- Backward-compatible alias:
+  - `./scripts/clean_bloat.sh` (forwards to `./scripts/clean_local_caches.sh`)
+
+Tradeoff summary:
+- Normal dev: fastest restarts, larger local disk usage (notably `target` and dependency caches).
+- Lean dev: lower steady-state disk usage via ephemeral caches and auto-clean, but first compile after each start is slower.
 
 ## Verification
 - `cargo test -p applykit_core`
@@ -50,6 +68,10 @@ Default output base:
 - `pnpm -C ui build`
 - `cargo tauri build --debug`
 - `./scripts/verify_hygiene.sh`
+- `./scripts/clean_heavy_artifacts.sh --dry-run`
+- `./scripts/clean_heavy_artifacts.sh`
+- `./scripts/clean_local_caches.sh --dry-run`
+- `./scripts/clean_local_caches.sh`
 
 ## Export Notes
 - Markdown bundle export is production-ready and deterministic.
