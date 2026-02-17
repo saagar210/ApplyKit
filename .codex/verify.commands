@@ -1,0 +1,10 @@
+# Source: .github/workflows/ci.yml
+cargo fmt --all --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test
+cargo audit -D warnings
+pnpm -C ui lint
+pnpm -C ui test
+pnpm -C ui build
+cargo tauri build --debug
+./scripts/verify_hygiene.sh
