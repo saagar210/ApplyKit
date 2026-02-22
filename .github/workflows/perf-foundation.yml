@@ -39,4 +39,5 @@ jobs:
         with:
           name: applykit-pack-perf-foundation
           path: .perf-results/**
+          include-hidden-files: true
           if-no-files-found: error

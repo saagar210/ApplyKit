@@ -32,6 +32,8 @@ jobs:
         run: pnpm -C ui install --frozen-lockfile
 
       - name: Run perf enforcement
+        env:
+          PERF_BUILD_MAX_RATIO: "1.50"
         run: bash ./.codex/scripts/run_perf_enforced.sh
 
       - name: Upload perf artifacts
@@ -39,4 +41,5 @@ jobs:
         with:
           name: applykit-pack-perf-enforced
           path: .perf-results/**
+          include-hidden-files: true
           if-no-files-found: error
