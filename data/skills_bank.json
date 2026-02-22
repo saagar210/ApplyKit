@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-02-14",
+  "skills": {
+    "Okta": {
+      "level": "operator",
+      "approved": true
+    },
+    "Duo": {
+      "level": "familiar",
+      "approved": true
+    },
+    "Jamf": {
+      "level": "operator",
+      "approved": true
+    },
+    "Kandji": {
+      "level": "operator",
+      "approved": true
+    },
+    "Intune": {
+      "level": "operator",
+      "approved": true
+    },
+    "Google Workspace": {
+      "level": "operator",
+      "approved": true
+    },
+    "Microsoft 365": {
+      "level": "operator",
+      "approved": true
+    },
+    "Jira": {
+      "level": "operator",
+      "approved": true
+    },
+    "Confluence": {
+      "level": "operator",
+      "approved": true
+    },
+    "Slack": {
+      "level": "operator",
+      "approved": true
+    },
+    "Zoom": {
+      "level": "operator",
+      "approved": true
+    },
+    "Zendesk": {
+      "level": "familiar",
+      "approved": true
+    },
+    "Box": {
+      "level": "operator",
+      "approved": true
+    },
+    "SharePoint": {
+      "level": "familiar",
+      "approved": true
+    },
+    "Cloudflare": {
+      "level": "familiar",
+      "approved": true
+    },
+    "AWS": {
+      "level": "familiar",
+      "approved": true
+    },
+    "GCP": {
+      "level": "familiar",
+      "approved": true
+    },
+    "Python": {
+      "level": "strong",
+      "approved": true
+    },
+    "SQL": {
+      "level": "strong",
+      "approved": true
+    },
+    "Bash/Shell": {
+      "level": "strong",
+      "approved": true
+    },
+    "PowerShell": {
+      "level": "familiar",
+      "approved": true
+    },
+    "GitHub": {
+      "level": "familiar",
+      "approved": true
+    },
+    "Adobe Admin": {
+      "level": "familiar",
+      "approved": true
+    },
+    "Salesforce": {
+      "level": "familiar",
+      "approved": true
+    }
+  }
+}

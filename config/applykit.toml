@@ -1,0 +1,34 @@
+
+# ApplyKit configuration (v1)
+# Generated: 2026-02-14
+
+[output]
+base_dir = "~/JobSearch/ApplyKitPackets"
+date_format = "%Y-%m-%d"
+
+[determinism]
+sort_tools = "jd_priority_then_alpha"
+sort_bullets = "score_then_id"
+max_resume_edits = 3
+max_bullet_swaps = 2
+
+[scoring]
+role_match = 30
+stack_match = 30
+scale_match = 20
+rigor_match = 10
+signal_boost = 10
+
+[tracks]
+support_ops = ["support", "it operations", "helpdesk", "tier", "endpoint", "saas admin"]
+identity_endpoint = ["okta", "sso", "mfa", "duo", "jamf", "kandji", "intune", "mdm", "macos", "windows"]
+security_compliance_ops = ["soc 2", "iso 27001", "audit", "controls", "evidence", "risk", "security"]
+automation_aiops = ["python", "sql", "automation", "metrics", "reporting", "ai", "llm", "workflow", "triage"]
+managerish = ["manager", "lead", "people", "stakeholders", "program", "roadmap"]
+
+[llm]
+enabled = true
+provider = "ollama"
+base_url = "http://127.0.0.1:11434"
+model = "llama3.2"
+allowed_tasks = ["rewrite_message", "rewrite_bullet", "summarize_jd"]

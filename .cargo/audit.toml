@@ -1,0 +1,45 @@
+[advisories]
+# Last strict-baseline validation (no local ignore config): 2026-02-22
+# Command: cd /tmp && cargo audit -f /Users/d/Projects/ApplyKit/Cargo.lock -D warnings --json
+# Result: 18 active informational advisories, 18 ignored entries, no stale ignore IDs.
+ignore = [
+  # GTK3 stack advisories are currently transitive via tauri/wry Linux backend.
+  # Owner: applykit-platform
+  # Target removal milestone: 2026-03-31
+  # Mitigation issue: AK-301
+  "RUSTSEC-2024-0411",
+  "RUSTSEC-2024-0412",
+  "RUSTSEC-2024-0413",
+  "RUSTSEC-2024-0414",
+  "RUSTSEC-2024-0415",
+  "RUSTSEC-2024-0416",
+  "RUSTSEC-2024-0417",
+  "RUSTSEC-2024-0418",
+  "RUSTSEC-2024-0419",
+  "RUSTSEC-2024-0420",
+  # Macro dependency in the same transitive GTK3 chain.
+  # Owner: applykit-platform
+  # Target removal milestone: 2026-03-31
+  # Mitigation issue: AK-301
+  "RUSTSEC-2024-0370",
+  # Hash crate transitively used by the current tauri-utils dependency graph.
+  # Owner: applykit-platform
+  # Target removal milestone: 2026-03-31
+  # Mitigation issue: AK-302
+  "RUSTSEC-2025-0057",
+  # Unicode crates transitively pulled by urlpattern in tauri-utils.
+  # Owner: applykit-platform
+  # Target removal milestone: 2026-03-31
+  # Mitigation issue: AK-303
+  "RUSTSEC-2025-0075",
+  "RUSTSEC-2025-0080",
+  "RUSTSEC-2025-0081",
+  "RUSTSEC-2025-0098",
+  "RUSTSEC-2025-0100",
+  # glib unsound warning is in GTK3 transitive graph and currently non-exploited
+  # in this codebase.
+  # Owner: applykit-platform
+  # Target removal milestone: 2026-03-31
+  # Mitigation issue: AK-301
+  "RUSTSEC-2024-0429",
+]
