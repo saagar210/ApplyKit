@@ -9,7 +9,7 @@ mkdir -p .perf-results
 
 pnpm -C ui build
 node scripts/perf/bundle-report.mjs
-node scripts/perf/measure-build-time.mjs "pnpm -C ui build"
+node scripts/perf/measure-build-time.mjs pnpm -C ui build
 node --expose-gc scripts/perf/memory-smoke.mjs
 bash scripts/perf/check-assets.sh
 node scripts/perf/summarize.mjs

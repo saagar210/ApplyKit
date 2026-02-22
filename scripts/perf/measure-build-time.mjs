@@ -1,7 +1,13 @@
 import { spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 
-const buildCommand = process.argv.slice(2).join(" ").trim() || process.env.PERF_BUILD_CMD || "pnpm -C ui build";
+const cliParts = process.argv.slice(2);
+const envParts = (process.env.PERF_BUILD_CMD ?? "")
+  .trim()
+  .split(/\s+/)
+  .filter(Boolean);
+const buildParts = cliParts.length > 0 ? cliParts : envParts.length > 0 ? envParts : ["pnpm", "-C", "ui", "build"];
+const [buildCommand, ...buildArgs] = buildParts;
 const sampleCountRaw = Number(process.env.PERF_BUILD_SAMPLES ?? 3);
 const sampleCount = Number.isFinite(sampleCountRaw) && sampleCountRaw > 0 ? Math.floor(sampleCountRaw) : 3;
 
@@ -10,8 +16,7 @@ let failedStatus = 0;
 
 for (let i = 0; i < sampleCount; i += 1) {
   const start = Date.now();
-  const result = spawnSync(buildCommand, {
-    shell: true,
+  const result = spawnSync(buildCommand, buildArgs, {
     stdio: "inherit",
   });
   const end = Date.now();
@@ -40,7 +45,7 @@ writeFileSync(
       buildSamplesMs: samples,
       sampleCount,
       capturedAt: new Date().toISOString(),
-      command: buildCommand,
+      command: [buildCommand, ...buildArgs].join(" "),
     },
     null,
     2,
