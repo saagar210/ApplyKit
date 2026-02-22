@@ -11,5 +11,5 @@ node ./.codex/scripts/check_diff_coverage.mjs
 ./.codex/scripts/docs_check.sh
 node ./.codex/scripts/check_gate_waivers.mjs
 pnpm -C ui build
-cargo tauri build --debug
+cargo tauri build --debug --bundles app
 ./scripts/verify_hygiene.sh

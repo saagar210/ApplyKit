@@ -12,7 +12,7 @@
 | diff coverage | `node ./.codex/scripts/check_diff_coverage.mjs` | `.github/workflows/ci.yml` |
 | docs check | `./.codex/scripts/docs_check.sh` | `AGENTS.md`, `README.md` |
 | required-gate waivers | `node ./.codex/scripts/check_gate_waivers.mjs` | `AGENTS.md`, `.codex/required-gates-waivers.json` |
-| build | `pnpm -C ui build && cargo tauri build --debug` | `README.md`, `.github/workflows/ci.yml` |
+| build | `pnpm -C ui build && cargo tauri build --debug --bundles app` | `README.md`, `.github/workflows/ci.yml` |
 | perf foundation | `bash ./.codex/scripts/run_perf_foundation.sh` | `.github/workflows/perf-foundation.yml` |
 | perf enforced | `bash ./.codex/scripts/run_perf_enforced.sh` | `.github/workflows/perf-enforced.yml` |
 | lean dev | `./scripts/dev_lean.sh` | `README.md` |
