@@ -1,0 +1,270 @@
+=== JD.txt ===
+Security Operations / IT Compliance (SOC 2)
+Responsibilities:
+- Maintain audit evidence and ITGC controls.
+- Improve access controls and endpoint posture.
+- Partner with IT Ops on policy/process and remediation.
+
+Requirements:
+- Audit readiness experience
+- Identity and endpoint tooling familiarity
+- Strong documentation and process discipline
+
+=== Extracted.json ===
+{
+  "normalized_text": "Security Operations / IT Compliance (SOC 2)\nResponsibilities:\n- Maintain audit evidence and ITGC controls.\n- Improve access controls and endpoint posture.\n- Partner with IT Ops on policy/process and remediation.\n\nRequirements:\n- Audit readiness experience\n- Identity and endpoint tooling familiarity\n- Strong documentation and process discipline",
+  "keywords": [
+    "audit",
+    "endpoint",
+    "it",
+    "access",
+    "compliance",
+    "controls",
+    "controls.",
+    "discipline",
+    "documentation",
+    "evidence",
+    "experience",
+    "familiarity",
+    "identity",
+    "improve",
+    "itgc",
+    "maintain",
+    "on",
+    "operations",
+    "ops",
+    "partner",
+    "policy/process",
+    "posture.",
+    "process",
+    "readiness",
+    "remediation.",
+    "security",
+    "soc",
+    "strong",
+    "tooling"
+  ],
+  "tools": [],
+  "requirements": [
+    "Audit readiness experience",
+    "Identity and endpoint tooling familiarity",
+    "Requirements:"
+  ],
+  "scale_signals": [],
+  "rigor_signals": [
+    "- Audit readiness experience",
+    "- Improve access controls and endpoint posture.",
+    "- Maintain audit evidence and ITGC controls."
+  ]
+}
+
+=== FitScore.md ===
+# Fit Score
+
+Total: **37 / 100**
+
+## Breakdown
+- Role match: 25
+- Stack match: 0
+- Scale match: 0
+- Rigor match: 10
+- Signal boost: 2
+
+## Why You Match
+- Primary track aligned: Security & Compliance Ops
+
+## Gaps
+- Audit readiness experience
+- Identity and endpoint tooling familiarity
+- Requirements:
+
+
+=== TailorPlan.md ===
+# Tailor Plan
+
+- Max edits: 3
+- Max bullet swaps: 2
+
+1. Matched JD using tags/tools overlap for box_onboarding_001 [BOX_BULLETS]
+2. Matched JD using tags/tools overlap for box_ciso_award_001 [BOX_BULLETS]
+3. Summary kept truth-first and aligned to selected track: Security & Compliance Ops [SUMMARY]
+
+
+=== Resume_1pg_Tailored.md ===
+
+<!-- APPLYKIT_RESUME_TEMPLATE v1 | date: 2026-02-14 -->
+<!-- NOTE: Keep single-column ATS-safe formatting when exporting to DOCX/PDF. -->
+
+# SAAGAR PATEL
+(510) 709-6457 | saagar210@gmail.com | linkedin.com/in/saagar-/
+
+<!--SECTION:HEADLINE-->
+## SENIOR SUPPORT ENGINEER | IT OPS & AUTOMATION | SECURITY & AUDIT-READY OPERATIONS
+
+<!--SECTION:SUMMARY-->
+Senior Support Engineer (CS background) building scalable, security-first IT operations for high-growth SaaS teams. Proven operating at scale, improving reliability through disciplined incident/change management, and reducing operational drag with automation and metrics. Applied AI in support workflows (triage, diagnostics, knowledge) to improve speed and consistency while keeping outputs verifiable.
+
+<!--SECTION:STACK-->
+**Core stack:** Okta + Duo • Jamf/Kandji/Intune • Google Workspace/M365 • Jira/Confluence • Slack/Zoom • Zendesk • Cloudflare • AWS/GCP • Python/SQL/Shell
+
+<!--SECTION:CORE_STRENGTHS-->
+## CORE STRENGTHS
+IT Ops (Tier 2/3, Exec Support, Incident/Problem, Change, Vendors, Asset lifecycle) • Identity/Endpoint (Okta, Duo, Jamf, Kandji, Intune) • SaaS Admin (GWS, M365, Atlassian, Slack/Zoom, Zendesk, Box, SharePoint) • Security/Compliance (hardening, audit readiness, control evidence) • Automation/AI (Python/SQL, reporting pipelines, AI-assisted triage)
+
+<!--SECTION:EXPERIENCE-->
+## EXPERIENCE
+
+### Box, Inc. | Senior Support Engineer  
+Jan 2021 – Present  
+<!--SECTION:BOX_BULLETS-->
+- Strengthened onboarding/offboarding reliability by reducing human error and improving access-control consistency through better workflows and tooling alignment.
+- Recognized with a CISO Award of Excellence (Oct 2022) for cybersecurity-focused operational improvements.
+- Closed **12,000+ tickets** with strong customer outcomes (**~99% CSAT**, **~95% first-contact resolution**) and consistent SLA performance.  
+- Built automation + metrics pipelines (Python/SQL) to reduce manual reporting and surface repeat drivers for proactive remediation.  
+- Led incident execution end-to-end (triage, coordination, comms, follow-through), strengthening ownership and post-incident corrective actions.  
+- Ran weekly change management with **50+ cross-functional stakeholders** (IT/Security/Engineering) to reduce regressions and rollout risk.  
+- Recognized with a **CISO Award of Excellence (Oct 2022)** for cybersecurity-focused operational improvements.
+
+### 8x8, Inc. | IT Support Engineer  
+Jan 2020 – Jan 2021  
+- Supported a distributed workforce across mixed macOS/Windows environments; handled Tier 1/2 and remote executive support.  
+- Built an internal self-service IT site, reducing ticket creation by **~15%** through better knowledge access and routing.
+
+<!--SECTION:INITIATIVES-->
+## SELECTED INITIATIVES
+- Improved security/audit readiness (control evidence + process discipline) and reduced operational drag through automation and metrics.
+
+<!--SECTION:EDUCATION-->
+## EDUCATION
+B.S. Computer Science, San Francisco State University
+
+<!--SECTION:CERTS-->
+## CERTIFICATIONS
+ITIL Foundation (PeopleCert) | Google Cloud Digital Leader
+
+=== RecruiterMessage.md ===
+
+<!-- APPLYKIT_TEMPLATE v1 -->
+<!-- Variables:
+Acme, Security Operations Engineer, Matched JD using tags/tools overlap for box_onboarding_001, Matched JD using tags/tools overlap for box_ciso_award_001, fit score 37 / 100, Happy to share details and tailored materials.
+-->
+
+Hi Hiring Team,
+
+I’m reaching out because I’m interested in the Security Operations Engineer role at Acme. I’ve supported SaaS orgs at scale (3,000+ users), with a strong focus on security-first IT operations, identity/endpoint, and automation.
+
+Relevant highlights:
+- Matched JD using tags/tools overlap for box_onboarding_001
+- Matched JD using tags/tools overlap for box_ciso_award_001
+- Proof: fit score 37 / 100
+
+If it’s helpful, I can share a tailored 1-page resume. Happy to share details and tailored materials.
+
+Thanks,  
+Saagar
+
+
+=== HiringManagerMessage.md ===
+
+<!-- APPLYKIT_TEMPLATE v1 -->
+<!-- Variables:
+Acme, Security Operations Engineer, Track focus: Security & Compliance Ops, fit score 37 / 100, operational rigor, support-to-systems leverage, Happy to share details and tailored materials.
+-->
+
+Hi Hiring Team,
+
+I’m applying for Security Operations Engineer at Acme. I build scalable, security-first IT operations, and I’m strongest where support meets systems: incident/change rigor, identity/endpoint, and automation/metrics.
+
+What I’d bring to your team:
+- Track focus: Security & Compliance Ops
+- Comfort operating at scale and driving reliability (fit score 37 / 100)
+- A bias for clear ownership, post-incident follow-through, and audit-ready controls
+
+If you’re open to it, I’d love to compare notes on operational rigor / support-to-systems leverage and how you’re measuring success in the role. Happy to share details and tailored materials.
+
+Best,  
+Saagar
+
+
+=== CoverNote_Short.md ===
+
+<!-- APPLYKIT_TEMPLATE v1 -->
+<!-- Variables:
+Acme, Security Operations Engineer, Matched JD using tags/tools overlap for box_onboarding_001, Matched JD using tags/tools overlap for box_ciso_award_001, fit score 37 / 100
+-->
+
+Hello Acme team,
+
+I’m applying for the Security Operations Engineer role. I’m a Senior Support Engineer with a CS background who builds scalable, security-first IT operations through automation, metrics, and disciplined incident/change execution.
+
+Highlights relevant to this role:
+- Matched JD using tags/tools overlap for box_onboarding_001
+- Matched JD using tags/tools overlap for box_ciso_award_001
+- Proof: fit score 37 / 100
+
+Thanks for your time,  
+Saagar
+
+
+=== TrackerRow.csv ===
+date,company,role,source,track,fit_total,status,next_action,packet_dir
+2026-02-14,Acme,Security Operations Engineer,manual,Security & Compliance Ops,37,new,,<PACKET_DIR>
+
+
+=== Diff.md ===
+# Diff
+
+  
+  <!-- APPLYKIT_RESUME_TEMPLATE v1 | date: 2026-02-14 -->
+  <!-- NOTE: Keep single-column ATS-safe formatting when exporting to DOCX/PDF. -->
+  
+  # SAAGAR PATEL
+  (510) 709-6457 | saagar210@gmail.com | linkedin.com/in/saagar-/
+  
+  <!--SECTION:HEADLINE-->
+  ## SENIOR SUPPORT ENGINEER | IT OPS & AUTOMATION | SECURITY & AUDIT-READY OPERATIONS
+  
+  <!--SECTION:SUMMARY-->
+  Senior Support Engineer (CS background) building scalable, security-first IT operations for high-growth SaaS teams. Proven operating at scale, improving reliability through disciplined incident/change management, and reducing operational drag with automation and metrics. Applied AI in support workflows (triage, diagnostics, knowledge) to improve speed and consistency while keeping outputs verifiable.
+  
+  <!--SECTION:STACK-->
+  **Core stack:** Okta + Duo • Jamf/Kandji/Intune • Google Workspace/M365 • Jira/Confluence • Slack/Zoom • Zendesk • Cloudflare • AWS/GCP • Python/SQL/Shell
+  
+  <!--SECTION:CORE_STRENGTHS-->
+  ## CORE STRENGTHS
+  IT Ops (Tier 2/3, Exec Support, Incident/Problem, Change, Vendors, Asset lifecycle) • Identity/Endpoint (Okta, Duo, Jamf, Kandji, Intune) • SaaS Admin (GWS, M365, Atlassian, Slack/Zoom, Zendesk, Box, SharePoint) • Security/Compliance (hardening, audit readiness, control evidence) • Automation/AI (Python/SQL, reporting pipelines, AI-assisted triage)
+  
+  <!--SECTION:EXPERIENCE-->
+  ## EXPERIENCE
+  
+  ### Box, Inc. | Senior Support Engineer  
+  Jan 2021 – Present  
+  <!--SECTION:BOX_BULLETS-->
+- - Supported a **3,000+ user** global workforce across a modern SaaS environment; delivered Tier 2/3 and executive support with consistently high service quality.  
++ - Strengthened onboarding/offboarding reliability by reducing human error and improving access-control consistency through better workflows and tooling alignment.
+- - Owned asset lifecycle operations across **10,000+ devices** (procurement, provisioning/enrollment, refresh, secure retirement), improving availability and reducing waste.  
++ - Recognized with a CISO Award of Excellence (Oct 2022) for cybersecurity-focused operational improvements.
+  - Closed **12,000+ tickets** with strong customer outcomes (**~99% CSAT**, **~95% first-contact resolution**) and consistent SLA performance.  
+  - Built automation + metrics pipelines (Python/SQL) to reduce manual reporting and surface repeat drivers for proactive remediation.  
+  - Led incident execution end-to-end (triage, coordination, comms, follow-through), strengthening ownership and post-incident corrective actions.  
+  - Ran weekly change management with **50+ cross-functional stakeholders** (IT/Security/Engineering) to reduce regressions and rollout risk.  
+  - Recognized with a **CISO Award of Excellence (Oct 2022)** for cybersecurity-focused operational improvements.
+  
+  ### 8x8, Inc. | IT Support Engineer  
+  Jan 2020 – Jan 2021  
+  - Supported a distributed workforce across mixed macOS/Windows environments; handled Tier 1/2 and remote executive support.  
+  - Built an internal self-service IT site, reducing ticket creation by **~15%** through better knowledge access and routing.
+  
+  <!--SECTION:INITIATIVES-->
+  ## SELECTED INITIATIVES
+  - Improved security/audit readiness (control evidence + process discipline) and reduced operational drag through automation and metrics.
+  
+  <!--SECTION:EDUCATION-->
+  ## EDUCATION
+  B.S. Computer Science, San Francisco State University
+  
+  <!--SECTION:CERTS-->
+  ## CERTIFICATIONS
+  ITIL Foundation (PeopleCert) | Google Cloud Digital Leader
+
+

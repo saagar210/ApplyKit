@@ -1,0 +1,4 @@
+[build]
+# Keep CI and contributor environments portable. Local flows can still override
+# this with CARGO_TARGET_DIR when external caches are desired.
+target-dir = "target"

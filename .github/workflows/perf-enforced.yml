@@ -1,0 +1,45 @@
+name: perf-enforced
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  perf-enforced:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install UI dependencies
+        run: pnpm -C ui install --frozen-lockfile
+
+      - name: Run perf enforcement
+        env:
+          PERF_BUILD_MAX_RATIO: "1.50"
+        run: bash ./.codex/scripts/run_perf_enforced.sh
+
+      - name: Upload perf artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: applykit-pack-perf-enforced
+          path: .perf-results/**
+          include-hidden-files: true
+          if-no-files-found: error

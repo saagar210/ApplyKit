@@ -1,0 +1,10 @@
+Security Operations / IT Compliance (SOC 2)
+Responsibilities:
+- Maintain audit evidence and ITGC controls.
+- Improve access controls and endpoint posture.
+- Partner with IT Ops on policy/process and remediation.
+
+Requirements:
+- Audit readiness experience
+- Identity and endpoint tooling familiarity
+- Strong documentation and process discipline

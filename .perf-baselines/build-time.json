@@ -1,0 +1,11 @@
+{
+  "buildMs": 1889,
+  "buildSamplesMs": [
+    1846,
+    1889,
+    1971
+  ],
+  "sampleCount": 3,
+  "capturedAt": "2026-02-22T10:34:19.957Z",
+  "command": "pnpm -C ui build"
+}
