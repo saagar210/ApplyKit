@@ -1,5 +1,15 @@
-# Replace these commands with your repo's canonical checks.
-# Keep order strict: fast static checks first, then behavioral, then docs drift.
-npm run lint
-npm run test
-npm run docs:check
+# Source: .github/workflows/ci.yml
+node scripts/ci/check-ci-parity.mjs
+cargo fmt --all --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test
+cargo audit -D warnings
+pnpm -C ui lint
+pnpm -C ui test
+./.codex/scripts/run_coverage.sh
+node ./.codex/scripts/check_diff_coverage.mjs
+./.codex/scripts/docs_check.sh
+node ./.codex/scripts/check_gate_waivers.mjs
+pnpm -C ui build
+cargo tauri build --debug
+./scripts/verify_hygiene.sh

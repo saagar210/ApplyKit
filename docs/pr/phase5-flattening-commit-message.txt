@@ -1,0 +1,9 @@
+chore(repo): finalize flattening execution and archive cleanup
+
+- Execute single-root repo cutover and remove nested runtime boundary
+- Rewrite active CI/parity/policy contracts to root-native paths
+- Capture rollback/governance evidence and post-cutover stabilization docs
+- Add docs/history archive index and phase manifest for historical artifacts
+- Remove legacy backup repo and normalize historical path references
+
+Tests: node scripts/ci/check-ci-parity.mjs && bash ./.codex/scripts/run_verify_commands.sh && bash ./.codex/scripts/run_perf_enforced.sh && cargo audit -D warnings && ./.codex/scripts/docs_check.sh

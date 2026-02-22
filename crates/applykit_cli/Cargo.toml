@@ -1,0 +1,15 @@
+[package]
+name = "applykit_cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "applykit"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+chrono.workspace = true
+clap.workspace = true
+applykit_core = { path = "../applykit_core" }

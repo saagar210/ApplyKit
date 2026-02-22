@@ -1,0 +1,11 @@
+IT Operations Engineer (Automation)
+Responsibilities:
+- Build metrics and dashboards for support/ops performance.
+- Automate workflows using Python/SQL.
+- Improve incident response and change management rigor.
+- Partner across Engineering/Security.
+
+Requirements:
+- Python and SQL
+- Experience supporting SaaS orgs at scale
+- Familiarity with AWS/GCP

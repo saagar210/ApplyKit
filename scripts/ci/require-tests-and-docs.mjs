@@ -14,13 +14,49 @@ const changed = execSync(`git diff --name-only ${baseRef}...HEAD`, { encoding: '
   .map((line) => line.trim())
   .filter(Boolean);
 
-const isProdCode = (file) => /^(src|app|server|api|lib)\//.test(file) && !/\.(test|spec)\.[cm]?[jt]sx?$/.test(file);
-const isTest = (file) => /^tests\//.test(file) || /\.(test|spec)\.[cm]?[jt]sx?$/.test(file);
-const isDoc = (file) => /^docs\//.test(file) || /^openapi\//.test(file) || file === 'README.md';
+const normalize = (file) => file.replaceAll('\\', '/');
+
+const isProdCode = (file) => {
+  const f = normalize(file);
+  const wrapperCode = /^(src|app|server|api|lib)\//.test(f);
+  const productCode =
+    /^crates\/[^/]+\/src\/.+\.rs$/.test(f) ||
+    /^src-tauri\/src\/.+\.rs$/.test(f) ||
+    /^ui\/src\/.+\.(ts|tsx|css)$/.test(f);
+  const isTestFile =
+    /^tests\//.test(f) ||
+    /^ui\/src\/.+\.(test|spec)\.[cm]?[jt]sx?$/.test(f) ||
+    /^crates\/[^/]+\/src\/tests\.rs$/.test(f) ||
+    /\.(test|spec)\.[cm]?[jt]sx?$/.test(f);
+  return (wrapperCode || productCode) && !isTestFile;
+};
+
+const isTest = (file) => {
+  const f = normalize(file);
+  return (
+    /^tests\//.test(f) ||
+    /^ui\/src\/.+\.(test|spec)\.[cm]?[jt]sx?$/.test(f) ||
+    /^crates\/[^/]+\/src\/tests\.rs$/.test(f) ||
+    /\.(test|spec)\.[cm]?[jt]sx?$/.test(f)
+  );
+};
+
+const isDoc = (file) => {
+  const f = normalize(file);
+  return (
+    /^docs\//.test(f) ||
+    /^openapi\//.test(f) ||
+    /^README\.md$/.test(f)
+  );
+};
 
 const prodChanged = changed.some(isProdCode);
 const testsChanged = changed.some(isTest);
 const docsChanged = changed.some(isDoc);
+const workflowChanged = changed.some(
+  (file) =>
+    normalize(file).startsWith('.github/workflows/'),
+);
 
 if (prodChanged && !testsChanged) {
   console.error('Policy failure: production code changed without test updates.');
@@ -30,6 +66,15 @@ if (prodChanged && !testsChanged) {
 if (prodChanged && !docsChanged) {
   console.error('Policy failure: production code changed without docs/OpenAPI updates.');
   process.exit(1);
+}
+
+if (workflowChanged) {
+  try {
+    execSync('node scripts/ci/check-ci-parity.mjs', { stdio: 'inherit' });
+  } catch {
+    console.error('Policy failure: CI workflow updates must pass parity guard.');
+    process.exit(1);
+  }
 }
 
 console.log('Policy checks passed.');
