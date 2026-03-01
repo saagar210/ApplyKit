@@ -1,4 +1,12 @@
 
+
+<!-- comm-contract:start -->
+## Communication Contract (Global)
+- Follow `/Users/d/.codex/policies/communication/BigPictureReportingV1.md` for all user-facing updates.
+- Keep default updates beginner-friendly, big-picture, and low-noise.
+- Keep technical details in internal artifacts unless explicitly requested by the user.
+- Honor toggles literally: `simple mode`, `show receipts`, `tech mode`, `debug mode`.
+<!-- comm-contract:end -->
 # AGENTS.md (ApplyKit)
 Model target: GPT-5.3-Codex High Reasoning
 
