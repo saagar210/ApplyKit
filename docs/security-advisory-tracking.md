@@ -6,10 +6,10 @@ Source of truth for active `cargo audit` ignore entries in `/Users/d/Projects/Ap
 
 | Advisory Group | IDs | Status | Last Validated On | Removal Blocker | Owner | Mitigation Issue | Target Removal Date | Next Review Date |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| GTK3 transitive chain | `RUSTSEC-2024-0411` .. `RUSTSEC-2024-0420`, `RUSTSEC-2024-0429` | blocked | 2026-02-22 | Transitively required by `tauri`/`wry` Linux GTK3 stack; no compatible in-range update in dry-run | applykit-platform | AK-301 | 2026-03-31 | 2026-04-05 |
-| Macro dependency in GTK3 chain | `RUSTSEC-2024-0370` | blocked | 2026-02-22 | Pulled through `glib-macros` in the same GTK3 chain; no direct replacement without upstream stack move | applykit-platform | AK-301 | 2026-03-31 | 2026-04-05 |
-| Hash crate transitive warning | `RUSTSEC-2025-0057` | blocked | 2026-02-22 | Pulled through `selectors -> kuchikiki -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-302 | 2026-03-31 | 2026-04-05 |
-| Unicode/urlpattern transitive warnings | `RUSTSEC-2025-0075`, `RUSTSEC-2025-0080`, `RUSTSEC-2025-0081`, `RUSTSEC-2025-0098`, `RUSTSEC-2025-0100` | blocked | 2026-02-22 | Pulled through `urlpattern -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-303 | 2026-03-31 | 2026-04-05 |
+| GTK3 transitive chain | `RUSTSEC-2024-0411` .. `RUSTSEC-2024-0420`, `RUSTSEC-2024-0429` | blocked | 2026-02-28 | Transitively required by `tauri`/`wry` Linux GTK3 stack; no compatible in-range update in dry-run | applykit-platform | AK-301 ([#7](https://github.com/saagar210/ApplyKit/issues/7)) | 2026-03-31 | 2026-03-14 |
+| Macro dependency in GTK3 chain | `RUSTSEC-2024-0370` | blocked | 2026-02-28 | Pulled through `glib-macros` in the same GTK3 chain; no direct replacement without upstream stack move | applykit-platform | AK-301 ([#7](https://github.com/saagar210/ApplyKit/issues/7)) | 2026-03-31 | 2026-03-14 |
+| Hash crate transitive warning | `RUSTSEC-2025-0057` | blocked | 2026-02-28 | Pulled through `selectors -> kuchikiki -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-302 ([#8](https://github.com/saagar210/ApplyKit/issues/8)) | 2026-03-31 | 2026-03-14 |
+| Unicode/urlpattern transitive warnings | `RUSTSEC-2025-0075`, `RUSTSEC-2025-0080`, `RUSTSEC-2025-0081`, `RUSTSEC-2025-0098`, `RUSTSEC-2025-0100` | blocked | 2026-02-28 | Pulled through `urlpattern -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-303 ([#9](https://github.com/saagar210/ApplyKit/issues/9)) | 2026-03-31 | 2026-03-14 |
 
 ## Week 3 Baseline Evidence
 
@@ -40,6 +40,17 @@ Source of truth for active `cargo audit` ignore entries in `/Users/d/Projects/Ap
 - `cargo update -p proc-macro-error --dry-run`
 
 All dry-runs reported no compatible lockfile upgrades that remove the active advisory set.
+
+## 2026-02-28 Revalidation Snapshot
+
+- Baseline command (no local ignore config):
+  - `cd /tmp && cargo audit -f /Users/d/Projects/ApplyKit/Cargo.lock -D warnings --json > /tmp/applykit_audit_baseline_2026-02-28.json`
+- Lockfile compatibility update attempt:
+  - `cargo update -w`
+- Result:
+  - active advisory IDs in warnings: 18
+  - stale ignore IDs in `/Users/d/Projects/ApplyKit/.cargo/audit.toml`: none
+  - compatible lockfile upgrades available to remove advisories: none
 
 ## Week 3 Conclusion
 

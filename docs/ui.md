@@ -35,7 +35,7 @@ Tabs:
 - Overview: Fit score, track, keywords, gaps
 - Resume: Tailor plan + bullet swap controls + preview
 - Messages: recruiter/manager/cover note with copy buttons
-- Export: open folder, export PDF (later)
+- Export: open folder, export deterministic PDF
 - Tracker: status + next action + notes
 
 ### Banks Editor
