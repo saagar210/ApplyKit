@@ -118,9 +118,9 @@ Record for each run:
   - branch protection: approvals=1, conversation resolution required=true
   - required checks: quality, verify, perf-enforced, perf-foundation, dependency_and_misconfig, sast, secrets, enforce
   - active ruleset: `main-operational-readiness` (`id=13367455`)
-  - open advisory issues: AK-301 (`#7`), AK-302 (`#8`), AK-303 (`#9`)
+  - advisory disposition: AK-301 (`#7`), AK-302 (`#8`), AK-303 (`#9`) closed on 2026-03-01 via AK-304 (`#12`) residual-risk decision
 - `decision`:
-  - go (operational readiness posture unchanged; residual advisory risk remains tracked in AK-301/302/303)
+  - go (operational readiness posture unchanged; residual advisory risk accepted and tracked via closed AK-301/302/303 with reopen triggers)
 
 ## Golden Path
 1. `pnpm -C ui install --frozen-lockfile`
