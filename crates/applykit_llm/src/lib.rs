@@ -1,6 +1,7 @@
 use anyhow::Context;
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -26,6 +27,14 @@ pub trait LlmAdapter {
     fn rewrite(&self, req: &LlmRequest) -> anyhow::Result<LlmResponse>;
 }
 
+fn llm_http_client() -> anyhow::Result<Client> {
+    Client::builder()
+        .connect_timeout(Duration::from_secs(5))
+        .timeout(Duration::from_secs(20))
+        .build()
+        .context("building llm HTTP client")
+}
+
 #[derive(Debug, Clone)]
 pub struct OllamaAdapter {
     pub base_url: String,
@@ -45,7 +54,7 @@ impl LlmAdapter for OllamaAdapter {
             response: String,
         }
 
-        let client = Client::new();
+        let client = llm_http_client()?;
         let url = format!("{}/api/generate", self.base_url.trim_end_matches('/'));
         let resp = client
             .post(&url)
@@ -95,7 +104,7 @@ impl LlmAdapter for OpenAiCompatAdapter {
             content: String,
         }
 
-        let client = Client::new();
+        let client = llm_http_client()?;
         let url = format!("{}/v1/chat/completions", self.base_url.trim_end_matches('/'));
         let resp = client
             .post(&url)

@@ -1,6 +1,6 @@
 use applykit_core::config::{
     load_config, load_runtime_settings, merge_config_with_runtime, resolve_output_base,
-    save_runtime_settings, RuntimeSettings,
+    save_runtime_settings, validate_local_llm_base_url, RuntimeSettings,
 };
 use applykit_core::insights::build_insights;
 use applykit_core::pipeline::{
@@ -832,11 +832,13 @@ fn get_settings_cmd() -> Result<SettingsResponse, String> {
 #[tauri::command]
 fn save_settings_cmd(input: SaveSettingsInput) -> Result<SettingsResponse, String> {
     let repo_root = repo_root()?;
+    let llm_base_url = required_trimmed_field("llmBaseUrl", input.llm_base_url)?;
+    validate_local_llm_base_url(&llm_base_url).map_err(|e| format!("invalid llmBaseUrl: {e}"))?;
     let runtime = RuntimeSettings {
         allow_unapproved: input.allow_unapproved,
         llm_enabled: Some(input.llm_enabled),
         llm_provider: Some(input.llm_provider),
-        llm_base_url: Some(input.llm_base_url),
+        llm_base_url: Some(llm_base_url),
         llm_model: Some(input.llm_model),
         llm_allowed_tasks: input.llm_allowed_tasks,
     };
@@ -1158,5 +1160,25 @@ allowed_tasks = []
         })
         .expect_err("invalid packet dir");
         assert!(err.contains("ReviewData.json"));
+    }
+
+    #[test]
+    fn save_settings_cmd_rejects_non_loopback_llm_base_url() {
+        let repo = tempfile::tempdir().expect("repo");
+        let base = repo.path().join("output_base");
+        std::fs::create_dir_all(&base).expect("create base");
+        write_test_config(repo.path(), &base);
+
+        let _cwd = CwdGuard::set_to(repo.path());
+        let err = save_settings_cmd(SaveSettingsInput {
+            allow_unapproved: false,
+            llm_enabled: true,
+            llm_provider: "ollama".to_string(),
+            llm_base_url: "https://example.com".to_string(),
+            llm_model: "llama3.2".to_string(),
+            llm_allowed_tasks: Some(vec!["rewrite_message".to_string()]),
+        })
+        .expect_err("non-loopback URL should fail");
+        assert!(err.contains("invalid llmBaseUrl"));
     }
 }

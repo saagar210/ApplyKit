@@ -51,6 +51,8 @@ fn llm_rewrite(
     if !cfg.enabled || !task_allowed(cfg, task_name) {
         return Ok(None);
     }
+    crate::config::validate_local_llm_base_url(&cfg.base_url)
+        .context("llm base_url violates local-only policy")?;
 
     let request = LlmRequest { task, prompt: prompt.to_string() };
     let provider = cfg.provider.to_ascii_lowercase();

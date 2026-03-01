@@ -603,6 +603,48 @@ Requirements:
         assert!(call_count.load(Ordering::SeqCst) > 0);
     }
 
+    #[test]
+    fn summarize_jd_with_non_loopback_base_url_falls_back_safely() {
+        let temp_repo = prepare_temp_repo();
+        let outdir = tempfile::tempdir().expect("tmp outdir");
+
+        save_runtime_settings(
+            temp_repo.path(),
+            &RuntimeSettings {
+                allow_unapproved: false,
+                llm_enabled: Some(true),
+                llm_provider: Some("lm_studio".to_string()),
+                llm_base_url: Some("https://example.com".to_string()),
+                llm_model: Some("local-model".to_string()),
+                llm_allowed_tasks: Some(vec!["summarize_jd".to_string()]),
+            },
+        )
+        .expect("save settings llm summarize");
+
+        let result = generate_packet(
+            GenerateInput {
+                company: "Acme".to_string(),
+                role: "Senior Support Engineer".to_string(),
+                source: "manual".to_string(),
+                baseline: Baseline::OnePage,
+                jd_text: fixture("jd_support_ops_01.txt"),
+                outdir: Some(outdir.path().to_path_buf()),
+                run_date: Some(NaiveDate::from_ymd_opt(2026, 2, 14).expect("date")),
+                track_override: None,
+                allow_unapproved: false,
+            },
+            GenerateOptions { repo_root: temp_repo.path().to_path_buf() },
+        )
+        .expect("generate with blocked base_url");
+
+        assert_eq!(result.extraction_source, ExtractionSource::Deterministic);
+        assert!(result.extraction_diagnostics.summarize_attempted);
+        assert!(result
+            .extraction_diagnostics
+            .summarize_fallback_reasons
+            .contains(&"request_failed".to_string()));
+    }
+
     proptest! {
         #[test]
         fn normalize_jd_is_idempotent(input in ".{0,2048}") {
