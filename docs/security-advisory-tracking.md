@@ -57,6 +57,29 @@ All dry-runs reported no compatible lockfile upgrades that remove the active adv
 - No stale ignore IDs were found, so no ignore removals were applied in this cycle.
 - Residual advisory risk remains explicitly tracked and time-bound by owner and mitigation issue.
 
+## 2026-02-28 Operational Follow-up Revalidation
+
+Commands rerun in this cycle:
+- Baseline no-ignore scan (source: `docs/week3-checklist.md`):
+  - `cd /tmp && cargo audit -f /Users/d/Projects/ApplyKit/Cargo.lock -D warnings --json > /tmp/applykit_next_steps_baseline_audit_2026-02-28.json`
+  - Result: expected non-zero exit (`EXIT:1`) with 18 informational advisories.
+- Canonical strict audit (source: `.codex/verify.commands`):
+  - `cargo audit -D warnings > /tmp/applykit_next_steps_canonical_audit_2026-02-28.log 2>&1`
+  - Result: pass (`EXIT:0`).
+
+Comparison results:
+- Active advisory IDs from baseline: 18 (`/tmp/applykit_next_steps_active_ids.txt`)
+- Ignore IDs in `.cargo/audit.toml`: 18 (`/tmp/applykit_next_steps_ignored_ids.txt`)
+- Stale ignore IDs: 0 (`/tmp/applykit_next_steps_stale_ids.txt`)
+- Missing ignore IDs for active advisories: 0 (`/tmp/applykit_next_steps_missing_ignore_ids.txt`)
+
+Current posture:
+- All tracked advisory groups remain open and owned by `applykit-platform`.
+- Mitigation issues remain active:
+  - AK-301: [#7](https://github.com/saagar210/ApplyKit/issues/7)
+  - AK-302: [#8](https://github.com/saagar210/ApplyKit/issues/8)
+  - AK-303: [#9](https://github.com/saagar210/ApplyKit/issues/9)
+
 ## Phase 4 Security Revalidation (Prepared Early)
 
 - Canonical strict audit (with tracked ignore list): pass
