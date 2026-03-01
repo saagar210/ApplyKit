@@ -10,3 +10,5 @@
 
 /ui/*.tsbuildinfo
 /.codex_audit/
+/coverage/
+/.perf-results/
