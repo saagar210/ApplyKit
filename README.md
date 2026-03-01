@@ -17,7 +17,7 @@ ApplyKit generates a deterministic, truth-gated application packet from a job de
 ## Repository Layout
 - `crates/applykit_core`: normalization, extraction, track classification, scoring, tailoring, truth validation, packet writing, storage.
 - `crates/applykit_llm`: bounded local provider adapters (Ollama, LM Studio, llama.cpp-compatible).
-- `crates/applykit_export`: deterministic markdown bundle + deterministic DOCX export (`PDF` intentionally bounded stub).
+- `crates/applykit_export`: deterministic markdown bundle + deterministic DOCX/PDF export.
 - `crates/applykit_cli`: `applykit generate` command.
 - `src-tauri`: desktop RPC bridge.
 - `ui`: React + TypeScript desktop UI.
