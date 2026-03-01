@@ -4,6 +4,7 @@ cargo fmt --all --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test
 cargo audit -D warnings
+pnpm -C ui audit --audit-level high
 pnpm -C ui lint
 pnpm -C ui test
 ./.codex/scripts/run_coverage.sh

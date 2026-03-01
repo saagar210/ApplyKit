@@ -108,3 +108,17 @@ Current posture:
   - active advisory IDs: 18
   - ignored advisory IDs in `.cargo/audit.toml`: 18
   - stale ignore IDs: none
+
+## 2026-03-01 Hardening Cycle Revalidation
+
+- Baseline command (no local ignore config):
+  - `cd /tmp && cargo audit -f /Users/d/Projects/ApplyKit/Cargo.lock -D warnings --json > /tmp/applykit_security_baseline_2026-03-01.json`
+  - Result: expected non-zero (`exit 1`) with informational warnings enabled.
+- Canonical strict audit:
+  - `cargo audit -D warnings`
+  - Result: pass.
+- Advisory drift check:
+  - active advisory IDs from baseline: 18
+  - ignore IDs in `.cargo/audit.toml`: 18
+  - stale ignore IDs: none
+  - missing ignore IDs: none

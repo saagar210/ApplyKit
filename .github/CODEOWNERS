@@ -1,0 +1,20 @@
+* @saagar210
+
+# Security-critical control plane
+/.github/workflows/ @saagar210
+/.codex/ @saagar210
+/scripts/ci/ @saagar210
+/scripts/git/ @saagar210
+/.cargo/audit.toml @saagar210
+
+# Application security boundaries
+/src-tauri/ @saagar210
+/crates/applykit_core/ @saagar210
+/crates/applykit_llm/ @saagar210
+/crates/applykit_export/ @saagar210
+/ui/ @saagar210
+
+# Security and release governance docs
+/docs/security-*.md @saagar210
+/docs/release-*.md @saagar210
+/docs/post-launch-verification.md @saagar210

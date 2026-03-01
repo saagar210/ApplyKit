@@ -1,6 +1,7 @@
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+use std::net::{Ipv4Addr, Ipv6Addr};
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -158,6 +159,58 @@ pub fn resolve_output_base(base_dir: &str) -> PathBuf {
     PathBuf::from(base_dir)
 }
 
+pub fn validate_local_llm_base_url(base_url: &str) -> anyhow::Result<()> {
+    let raw = base_url.trim();
+    if raw.is_empty() {
+        anyhow::bail!("llm base URL cannot be empty");
+    }
+
+    let (scheme, rest) =
+        raw.split_once("://").ok_or_else(|| anyhow::anyhow!("llm base URL must include scheme"))?;
+    if scheme != "http" && scheme != "https" {
+        anyhow::bail!("llm base URL must use http or https");
+    }
+
+    let authority = rest.split('/').next().unwrap_or_default();
+    if authority.is_empty() {
+        anyhow::bail!("llm base URL must include host");
+    }
+    if authority.contains('@') {
+        anyhow::bail!("llm base URL must not include userinfo");
+    }
+
+    let host = if authority.starts_with('[') {
+        let end = authority
+            .find(']')
+            .ok_or_else(|| anyhow::anyhow!("invalid IPv6 host format in llm base URL"))?;
+        let suffix = &authority[end + 1..];
+        if !suffix.is_empty() && !suffix.starts_with(':') {
+            anyhow::bail!("invalid host/port in llm base URL");
+        }
+        &authority[1..end]
+    } else {
+        authority.split(':').next().unwrap_or_default()
+    };
+
+    let host_lower = host.to_ascii_lowercase();
+    if host_lower == "localhost" {
+        return Ok(());
+    }
+
+    if let Ok(ipv4) = host.parse::<Ipv4Addr>() {
+        if ipv4.is_loopback() {
+            return Ok(());
+        }
+    }
+    if let Ok(ipv6) = host.parse::<Ipv6Addr>() {
+        if ipv6.is_loopback() {
+            return Ok(());
+        }
+    }
+
+    anyhow::bail!("llm base URL host must be loopback (localhost/127.0.0.0/8/::1)")
+}
+
 pub fn scoring_total_weights(scoring: &ScoringConfig) -> BTreeMap<&'static str, u8> {
     let mut map = BTreeMap::new();
     map.insert("role_match", scoring.role_match);
@@ -166,4 +219,41 @@ pub fn scoring_total_weights(scoring: &ScoringConfig) -> BTreeMap<&'static str, 
     map.insert("rigor_match", scoring.rigor_match);
     map.insert("signal_boost", scoring.signal_boost);
     map
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_local_llm_base_url;
+
+    #[test]
+    fn validate_local_llm_base_url_accepts_loopback_hosts() {
+        let allowed = [
+            "http://localhost:11434",
+            "http://127.0.0.1:8080",
+            "http://127.10.20.30:9000",
+            "http://[::1]:11434",
+            "https://localhost",
+        ];
+        for url in allowed {
+            validate_local_llm_base_url(url).unwrap_or_else(|e| panic!("{url} should pass: {e}"));
+        }
+    }
+
+    #[test]
+    fn validate_local_llm_base_url_rejects_non_loopback_hosts() {
+        let userinfo_url = ["http://", "user", ":", "pass", "@localhost:11434"].concat();
+        let blocked = [
+            "",
+            "localhost:11434",
+            "ftp://localhost:21",
+            "http://0.0.0.0:11434",
+            "http://192.168.1.50:11434",
+            "https://example.com",
+            "https://8.8.8.8",
+        ];
+        for url in blocked {
+            assert!(validate_local_llm_base_url(url).is_err(), "{url} should fail");
+        }
+        assert!(validate_local_llm_base_url(&userinfo_url).is_err(), "{userinfo_url} should fail");
+    }
 }

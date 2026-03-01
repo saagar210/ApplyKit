@@ -28,6 +28,7 @@ const checks = [
     file: ".codex/verify.commands",
     contains: [
       "node scripts/ci/check-ci-parity.mjs",
+      "pnpm -C ui audit --audit-level high",
       "./.codex/scripts/run_coverage.sh",
       "node ./.codex/scripts/check_diff_coverage.mjs",
       "node ./.codex/scripts/check_gate_waivers.mjs",

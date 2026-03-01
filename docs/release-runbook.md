@@ -122,6 +122,21 @@ Record for each run:
 - `decision`:
   - go (operational readiness posture unchanged; residual advisory risk accepted and tracked via closed AK-301/302/303 with reopen triggers)
 
+## Security Hardening Snapshot (2026-03-01)
+
+- `operator`: codex-session
+- `date_utc`: 2026-03-01T13:24:00Z
+- `git_ref`: working tree hardening cycle (pre-commit)
+- `verify_log_path`:
+  - `/tmp/applykit_security_hardening_verify_2026-03-01.log`
+- `security_audit_result`:
+  - canonical strict audit: pass
+  - baseline no-ignore scan: expected non-zero (`/tmp/applykit_security_baseline_2026-03-01.json`)
+  - UI dependency audit high: pass (`pnpm -C ui audit --audit-level high`)
+  - UI dependency audit moderate: pass (`pnpm -C ui audit --audit-level moderate`)
+- `decision`:
+  - go (hardening cycle complete; residual transitive Rust advisories remain tracked and time-bound)
+
 ## Golden Path
 1. `pnpm -C ui install --frozen-lockfile`
 2. `bash ./.codex/scripts/run_verify_commands.sh`
