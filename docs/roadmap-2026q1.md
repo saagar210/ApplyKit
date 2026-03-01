@@ -74,7 +74,7 @@
   - Evidence: CI parity check passed.
   - Evidence: branch protection and rulesets snapshots refreshed.
   - Durable artifact: `docs/evidence/operational-revalidation-2026-02-28.md`.
-  - Follow-up status: advisory remediation issues remain open and owned (AK-301 [#7](https://github.com/saagar210/ApplyKit/issues/7), AK-302 [#8](https://github.com/saagar210/ApplyKit/issues/8), AK-303 [#9](https://github.com/saagar210/ApplyKit/issues/9)).
+  - Follow-up status: advisory remediation issues were closed on 2026-03-01 via AK-304 residual-risk acceptance (AK-301 [#7](https://github.com/saagar210/ApplyKit/issues/7), AK-302 [#8](https://github.com/saagar210/ApplyKit/issues/8), AK-303 [#9](https://github.com/saagar210/ApplyKit/issues/9), program issue [#12](https://github.com/saagar210/ApplyKit/issues/12)).
 
 ## Status Tracking Fields
 For each weekly checkpoint capture:
