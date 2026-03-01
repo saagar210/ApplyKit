@@ -30,6 +30,9 @@ jobs:
       - name: Install UI dependencies
         run: pnpm -C ui install --frozen-lockfile
 
+      - name: Install Playwright browser
+        run: pnpm -C ui exec playwright install chromium
+
       - name: Policy checks
         run: |
           node scripts/ci/require-tests-and-docs.mjs

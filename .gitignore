@@ -12,3 +12,5 @@
 /.codex_audit/
 /coverage/
 /.perf-results/
+/ui/test-results/
+/ui/playwright-report/

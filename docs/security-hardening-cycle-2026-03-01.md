@@ -89,4 +89,4 @@ This cycle executed remediation against previously identified risks:
 
 - Hardening cycle status: **complete** for previously identified actionable security gaps.
 - Residual risk status: **accepted and time-bound** for transitive Rust advisories pending compatible upstream dependency movement.
-- Next checkpoint: weekly security revalidation against baseline advisory JSON and canonical verify gates.
+- Next checkpoint: monthly security revalidation against baseline advisory JSON and canonical verify gates (first Monday window via `.github/workflows/security-monthly-revalidation.yml`).

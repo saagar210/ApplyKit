@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import * as Tabs from "@radix-ui/react-tabs";
+import { type KeyboardEvent, type ReactNode } from "react";
 
 type PreviewMode = "preview" | "diff";
 
@@ -13,6 +14,8 @@ interface Props {
   onTogglePreview: () => void;
 }
 
+const modeOrder: PreviewMode[] = ["preview", "diff"];
+
 export function AppShell({
   sidebar,
   main,
@@ -23,10 +26,24 @@ export function AppShell({
   onPreviewModeChange,
   onTogglePreview
 }: Props) {
+  const onPreviewKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+      return;
+    }
+
+    event.preventDefault();
+    const currentIndex = modeOrder.indexOf(previewMode);
+    const delta = event.key === "ArrowRight" ? 1 : -1;
+    const nextIndex = (currentIndex + delta + modeOrder.length) % modeOrder.length;
+    onPreviewModeChange(modeOrder[nextIndex]);
+  };
+
   return (
     <div className={`app-shell ${showPreview ? "with-preview" : "without-preview"}`}>
-      <aside className="sidebar">{sidebar}</aside>
-      <main className="main-pane">
+      <aside className="sidebar" aria-label="Primary navigation">
+        {sidebar}
+      </aside>
+      <main id="main-content" className="main-pane" tabIndex={-1}>
         {!showPreview ? (
           <section className="card row end">
             <button className="btn" onClick={onTogglePreview}>
@@ -37,27 +54,32 @@ export function AppShell({
         {main}
       </main>
       {showPreview ? (
-        <section className="preview-pane">
-          <section className="card row between preview-controls">
-            <div className="row">
-              <button
-                className={`btn ${previewMode === "preview" ? "btn-primary" : ""}`}
-                onClick={() => onPreviewModeChange("preview")}
+        <section className="preview-pane" aria-label="Preview panel">
+          <Tabs.Root
+            className="stack-lg"
+            value={previewMode}
+            onValueChange={(value) => onPreviewModeChange(value as PreviewMode)}
+          >
+            <section className="card row between preview-controls">
+              <Tabs.List
+                aria-label="Preview mode"
+                className="preview-tablist"
+                onKeyDown={onPreviewKeyDown}
               >
-                Preview
+                <Tabs.Trigger className="btn preview-trigger" value="preview">
+                  Preview
+                </Tabs.Trigger>
+                <Tabs.Trigger className="btn preview-trigger" value="diff">
+                  Diff
+                </Tabs.Trigger>
+              </Tabs.List>
+              <button className="btn" onClick={onTogglePreview}>
+                Hide Pane
               </button>
-              <button
-                className={`btn ${previewMode === "diff" ? "btn-primary" : ""}`}
-                onClick={() => onPreviewModeChange("diff")}
-              >
-                Diff
-              </button>
-            </div>
-            <button className="btn" onClick={onTogglePreview}>
-              Hide Pane
-            </button>
-          </section>
-          {previewMode === "preview" ? preview : diffPreview}
+            </section>
+            <Tabs.Content value="preview">{preview}</Tabs.Content>
+            <Tabs.Content value="diff">{diffPreview}</Tabs.Content>
+          </Tabs.Root>
         </section>
       ) : null}
     </div>

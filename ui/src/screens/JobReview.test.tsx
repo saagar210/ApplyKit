@@ -78,7 +78,7 @@ describe("JobReview tracker state", () => {
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "export" }));
+    fireEvent.click(screen.getByRole("tab", { name: /export/i }));
     fireEvent.click(screen.getByRole("button", { name: "Export Markdown Bundle" }));
     fireEvent.click(screen.getByRole("button", { name: "Export DOCX" }));
     fireEvent.click(screen.getByRole("button", { name: "Export PDF" }));
@@ -104,7 +104,7 @@ describe("JobReview tracker state", () => {
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "messages" }));
+    fireEvent.click(screen.getByRole("tab", { name: /messages/i }));
     const copyButtons = screen.getAllByRole("button", { name: "Copy" });
     fireEvent.click(copyButtons[0]);
     fireEvent.click(copyButtons[1]);
@@ -130,7 +130,7 @@ describe("JobReview tracker state", () => {
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "tracker" }));
+    fireEvent.click(screen.getByRole("tab", { name: /tracker/i }));
     const saveButton = screen.getByRole("button", { name: "Save Tracker" });
     expect(saveButton).toBeDisabled();
 
@@ -165,7 +165,7 @@ describe("JobReview tracker state", () => {
       />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "tracker" }));
+    fireEvent.click(screen.getByRole("tab", { name: /tracker/i }));
 
     const statusSelect = screen.getByDisplayValue("new") as HTMLSelectElement;
     fireEvent.change(statusSelect, { target: { value: "reply" } });
@@ -187,5 +187,37 @@ describe("JobReview tracker state", () => {
 
     expect(screen.getByDisplayValue("applied")).toBeInTheDocument();
     expect(screen.getByDisplayValue("send follow-up")).toBeInTheDocument();
+  });
+
+  it("renders resume edits and truth violations when present", () => {
+    const withViolations = detail("/tmp/packet-c", "new", "follow up");
+    withViolations.tailorPlan.edits = [
+      {
+        kind: "rewrite",
+        targetSection: "Experience",
+        reason: "Align to job requirements",
+        provenanceIds: []
+      }
+    ];
+    withViolations.truthReport.violations = ["Unsupported claim found"];
+
+    render(
+      <JobReview
+        detail={withViolations}
+        approvedOnly
+        onCopy={vi.fn().mockResolvedValue(undefined)}
+        onOpenFolder={vi.fn().mockResolvedValue(undefined)}
+        onExportMarkdown={vi.fn().mockResolvedValue(undefined)}
+        onExportDocx={vi.fn().mockResolvedValue(undefined)}
+        onExportPdf={vi.fn().mockResolvedValue(undefined)}
+        onUpdateTracker={vi.fn().mockResolvedValue(undefined)}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("tab", { name: /resume/i }));
+    expect(screen.getByText(/Align to job requirements/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("tab", { name: /export/i }));
+    expect(screen.getByText(/Unsupported claim found/i)).toBeInTheDocument();
   });
 });

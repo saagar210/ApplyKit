@@ -46,6 +46,11 @@ jobs:
           if grep -q "cargo tauri build" .codex/verify.commands; then
             cargo install tauri-cli --version "^2.0" --locked
           fi
+      - name: Ensure Playwright browser when required
+        run: |
+          if grep -q "test:e2e:a11y" .codex/verify.commands; then
+            pnpm -C ui exec playwright install chromium
+          fi
       - name: Run canonical repo gates
         run: bash ./.codex/scripts/run_verify_commands.sh
 

@@ -1,0 +1,79 @@
+name: security-monthly-revalidation
+
+on:
+  schedule:
+    - cron: "0 16 * * 1"
+  workflow_dispatch:
+
+jobs:
+  revalidate:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Determine first-Monday window
+      id: schedule
+      run: |
+        day_of_week="$(date -u +%u)"
+        day_of_month="$(date -u +%d)"
+        if [ "$day_of_week" = "1" ] && [ "$day_of_month" -le "07" ]; then
+          echo "run_cycle=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "run_cycle=false" >> "$GITHUB_OUTPUT"
+        fi
+
+      - name: Skip non-window schedule
+      if: steps.schedule.outputs.run_cycle != 'true' && github.event_name == 'schedule'
+      run: echo "Skipping: not first Monday window"
+
+      - name: Setup Rust
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup pnpm
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
+      - name: Setup Node
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      uses: actions/setup-node@v5
+      with:
+        node-version: 22
+        cache: pnpm
+        cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install UI dependencies
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      run: pnpm -C ui install --frozen-lockfile
+
+      - name: Install required Rust tools
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      run: |
+        cargo install cargo-audit --locked
+        cargo install cargo-llvm-cov --locked
+        cargo install tauri-cli --version "^2.0" --locked
+
+      - name: Install Playwright browser
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      run: pnpm -C ui exec playwright install chromium
+
+      - name: Run monthly security revalidation
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      env:
+        DATE_UTC: ${{ github.run_id }}
+      run: |
+        DATE_UTC="$(date -u +%Y-%m-%d)"
+        DATE_UTC="$DATE_UTC" ./scripts/security/monthly_revalidation.sh
+
+      - name: Upload security evidence artifacts
+      if: steps.schedule.outputs.run_cycle == 'true' || github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-revalidation-${{ github.run_id }}
+        path: |
+          docs/evidence/security-revalidation-*.json
+          docs/evidence/security-revalidation-*.log
+          docs/evidence/security-revalidation-*.md
+

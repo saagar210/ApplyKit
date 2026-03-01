@@ -7,6 +7,7 @@ cargo audit -D warnings
 pnpm -C ui audit --audit-level high
 pnpm -C ui lint
 pnpm -C ui test
+pnpm -C ui test:e2e:a11y
 ./.codex/scripts/run_coverage.sh
 node ./.codex/scripts/check_diff_coverage.mjs
 ./.codex/scripts/docs_check.sh

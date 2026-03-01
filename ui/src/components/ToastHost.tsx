@@ -10,9 +10,14 @@ interface Props {
 
 export function ToastHost({ toasts }: Props) {
   return (
-    <div className="toast-host" aria-live="polite" aria-label="notifications">
+    <div className="toast-host" role="region" aria-label="notifications">
       {toasts.map((toast) => (
-        <div key={toast.id} className={`toast toast-${toast.tone}`}>
+        <div
+          key={toast.id}
+          className={`toast toast-${toast.tone}`}
+          role={toast.tone === "error" ? "alert" : "status"}
+          aria-live={toast.tone === "error" ? "assertive" : "polite"}
+        >
           {toast.message}
         </div>
       ))}

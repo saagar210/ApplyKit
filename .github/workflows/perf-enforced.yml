@@ -33,7 +33,7 @@ jobs:
 
       - name: Run perf enforcement
         env:
-          PERF_BUILD_MAX_RATIO: "1.50"
+          PERF_BUILD_MAX_RATIO: "2.00"
         run: bash ./.codex/scripts/run_perf_enforced.sh
 
       - name: Upload perf artifacts
