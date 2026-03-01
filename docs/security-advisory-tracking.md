@@ -2,14 +2,14 @@
 
 Source of truth for active `cargo audit` ignore entries in `/Users/d/Projects/ApplyKit/.cargo/audit.toml`.
 
-## Week 3 Status Matrix
+## Current Advisory Matrix (2026-03-01)
 
 | Advisory Group | IDs | Status | Last Validated On | Removal Blocker | Owner | Mitigation Issue | Target Removal Date | Next Review Date |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| GTK3 transitive chain | `RUSTSEC-2024-0411` .. `RUSTSEC-2024-0420`, `RUSTSEC-2024-0429` | blocked | 2026-02-28 | Transitively required by `tauri`/`wry` Linux GTK3 stack; no compatible in-range update in dry-run | applykit-platform | AK-301 ([#7](https://github.com/saagar210/ApplyKit/issues/7)) | 2026-03-31 | 2026-03-14 |
-| Macro dependency in GTK3 chain | `RUSTSEC-2024-0370` | blocked | 2026-02-28 | Pulled through `glib-macros` in the same GTK3 chain; no direct replacement without upstream stack move | applykit-platform | AK-301 ([#7](https://github.com/saagar210/ApplyKit/issues/7)) | 2026-03-31 | 2026-03-14 |
-| Hash crate transitive warning | `RUSTSEC-2025-0057` | blocked | 2026-02-28 | Pulled through `selectors -> kuchikiki -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-302 ([#8](https://github.com/saagar210/ApplyKit/issues/8)) | 2026-03-31 | 2026-03-14 |
-| Unicode/urlpattern transitive warnings | `RUSTSEC-2025-0075`, `RUSTSEC-2025-0080`, `RUSTSEC-2025-0081`, `RUSTSEC-2025-0098`, `RUSTSEC-2025-0100` | blocked | 2026-02-28 | Pulled through `urlpattern -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-303 ([#9](https://github.com/saagar210/ApplyKit/issues/9)) | 2026-03-31 | 2026-03-14 |
+| GTK3 transitive chain | `RUSTSEC-2024-0411` .. `RUSTSEC-2024-0420`, `RUSTSEC-2024-0429` | residual accepted (issue closed) | 2026-03-01 | Transitively required by `tauri`/`wry` Linux GTK3 stack; no compatible in-range update in dry-run | applykit-platform | AK-301 ([#7](https://github.com/saagar210/ApplyKit/issues/7)) | 2026-03-31 | on next compatible dependency release |
+| Macro dependency in GTK3 chain | `RUSTSEC-2024-0370` | residual accepted (issue closed) | 2026-03-01 | Pulled through `glib-macros` in the same GTK3 chain; no direct replacement without upstream stack move | applykit-platform | AK-301 ([#7](https://github.com/saagar210/ApplyKit/issues/7)) | 2026-03-31 | on next compatible dependency release |
+| Hash crate transitive warning | `RUSTSEC-2025-0057` | residual accepted (issue closed) | 2026-03-01 | Pulled through `selectors -> kuchikiki -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-302 ([#8](https://github.com/saagar210/ApplyKit/issues/8)) | 2026-03-31 | on next compatible dependency release |
+| Unicode/urlpattern transitive warnings | `RUSTSEC-2025-0075`, `RUSTSEC-2025-0080`, `RUSTSEC-2025-0081`, `RUSTSEC-2025-0098`, `RUSTSEC-2025-0100` | residual accepted (issue closed) | 2026-03-01 | Pulled through `urlpattern -> tauri-utils`; no compatible dry-run update removed chain | applykit-platform | AK-303 ([#9](https://github.com/saagar210/ApplyKit/issues/9)) | 2026-03-31 | on next compatible dependency release |
 
 ## Week 3 Baseline Evidence
 
@@ -76,11 +76,25 @@ Comparison results:
   - `docs/evidence/operational-revalidation-2026-02-28.md`
 
 Current posture:
-- All tracked advisory groups remain open and owned by `applykit-platform`.
-- Mitigation issues remain active:
-  - AK-301: [#7](https://github.com/saagar210/ApplyKit/issues/7)
-  - AK-302: [#8](https://github.com/saagar210/ApplyKit/issues/8)
-  - AK-303: [#9](https://github.com/saagar210/ApplyKit/issues/9)
+- All tracked advisory groups remain present in baseline scans and owned by `applykit-platform`.
+- Mitigation issues are now closed with explicit residual-risk acceptance:
+  - AK-301: [#7](https://github.com/saagar210/ApplyKit/issues/7) (closed 2026-03-01)
+  - AK-302: [#8](https://github.com/saagar210/ApplyKit/issues/8) (closed 2026-03-01)
+  - AK-303: [#9](https://github.com/saagar210/ApplyKit/issues/9) (closed 2026-03-01)
+  - Program closeout: AK-304 [#12](https://github.com/saagar210/ApplyKit/issues/12) (closed 2026-03-01)
+
+## 2026-03-01 Closure Decision
+
+- Final closure execution completed under AK-304 decision rules.
+- Final evidence:
+  - `cargo audit -D warnings`: pass
+  - baseline no-ignore scan: expected non-zero (18 active advisory IDs)
+  - `.cargo/audit.toml` ignores: 18
+  - stale ignore IDs: 0
+  - missing ignore IDs: 0
+  - `cargo update -w --dry-run`: no compatible lockfile upgrades
+- Reopen criteria:
+  - reopen AK-301/302/303 if a compatible dependency path removes the affected advisory IDs while preserving green canonical verify.
 
 ## Phase 4 Security Revalidation (Prepared Early)
 
