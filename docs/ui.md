@@ -55,3 +55,18 @@ Tabs:
 - GapList (missing reqs + safe framing)
 - Toast notifications
 - Command palette (⌘K)
+
+## Release polish guardrails
+- Theme parity: light + dark token sets are required.
+- Accessibility target: WCAG 2.2 AA for critical workflows.
+- Reduced motion support via `prefers-reduced-motion`.
+- Responsive target: desktop-first with laptop/tablet fallback.
+
+## UI verification commands
+- `pnpm -C /Users/d/Projects/ApplyKit/ui lint`
+- `pnpm -C /Users/d/Projects/ApplyKit/ui test`
+- `pnpm -C /Users/d/Projects/ApplyKit/ui test:a11y`
+- `pnpm -C /Users/d/Projects/ApplyKit/ui test:e2e:a11y`
+- `pnpm -C /Users/d/Projects/ApplyKit/ui test:responsive`
+- `pnpm -C /Users/d/Projects/ApplyKit/ui test:coverage`
+- `pnpm -C /Users/d/Projects/ApplyKit/ui build`

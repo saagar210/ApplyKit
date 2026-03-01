@@ -70,6 +70,7 @@ Tradeoff summary:
 - `cargo audit -D warnings`
 - `pnpm -C ui lint`
 - `pnpm -C ui test`
+- `pnpm -C ui test:e2e:a11y`
 - `./.codex/scripts/run_coverage.sh`
 - `node ./.codex/scripts/check_diff_coverage.mjs`
 - `pnpm -C ui build`
@@ -81,6 +82,7 @@ Tradeoff summary:
 - `./scripts/clean_heavy_artifacts.sh`
 - `./scripts/clean_local_caches.sh --dry-run`
 - `./scripts/clean_local_caches.sh`
+- `./scripts/security/monthly_revalidation.sh`
 
 ## Export Notes
 - Markdown bundle export is production-ready and deterministic.

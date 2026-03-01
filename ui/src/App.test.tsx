@@ -10,8 +10,8 @@ describe("App", () => {
 
   it("supports preview pane toggle controls", () => {
     render(<App />);
-    expect(screen.getAllByRole("button", { name: "Preview" }).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole("button", { name: "Diff" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("tab", { name: "Preview" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("tab", { name: "Diff" }).length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getAllByRole("button", { name: "Hide Pane" })[0]);
     expect(screen.getAllByRole("button", { name: "Show Preview Pane" }).length).toBeGreaterThan(0);

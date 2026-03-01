@@ -146,7 +146,7 @@ export default function App() {
   const sidebar = (
     <div className="stack-lg">
       <h1>ApplyKit</h1>
-      <nav className="stack-sm">
+      <nav className="stack-sm" aria-label="Application views">
         {[
           ["dashboard", "Jobs"],
           ["new-job", "New Job"],
@@ -159,6 +159,7 @@ export default function App() {
             key={id}
             className={`nav-btn ${view === id ? "active" : ""}`}
             onClick={() => setView(id as View)}
+            aria-current={view === id ? "page" : undefined}
           >
             {label}
           </button>
@@ -449,6 +450,9 @@ export default function App() {
 
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       <AppShell
         sidebar={sidebar}
         main={main}

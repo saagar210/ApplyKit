@@ -22,6 +22,7 @@ function mkJob(partial: Partial<JobSummary>): JobSummary {
 
 describe("Dashboard filters", () => {
   it("applies date, track, status, and search filters", () => {
+    const onOpenJob = vi.fn();
     const jobs: JobSummary[] = [
       mkJob({
         id: "1",
@@ -47,7 +48,7 @@ describe("Dashboard filters", () => {
       <Dashboard
         jobs={jobs}
         onNewJob={vi.fn()}
-        onOpenJob={vi.fn()}
+        onOpenJob={onOpenJob}
         insights={{ repliesByTrack: [], commonGaps: [], keywordCorrelations: [] }}
       />
     );
@@ -59,5 +60,8 @@ describe("Dashboard filters", () => {
 
     expect(screen.getByText("Acme")).toBeInTheDocument();
     expect(screen.queryByText("Beta")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /open packet for acme support engineer/i }));
+    expect(onOpenJob).toHaveBeenCalledWith("1");
   });
 });

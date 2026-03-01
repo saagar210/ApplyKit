@@ -72,19 +72,23 @@ export function Dashboard({ jobs, onNewJob, onOpenJob, insights }: Props) {
         </button>
       </div>
 
-      <section className="card">
-        <div className="row between wrap">
-          <h3>Recent Packets</h3>
-          <div className="row wrap">
-            <input
-              aria-label="Search jobs"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search company, role, track, source"
-            />
-            <label className="row">
+      <section className="card recent-packets-card" aria-labelledby="recent-packets-heading">
+        <div className="row between wrap filters-panel">
+          <h3 id="recent-packets-heading">Recent Packets</h3>
+          <div className="row wrap filters-controls">
+            <label>
+              Search jobs
+              <input
+                aria-label="Search jobs"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search company, role, track, source"
+              />
+            </label>
+            <label>
               Window
               <select
+                aria-label="Window"
                 value={daysFilter}
                 onChange={(e) => setDaysFilter(e.target.value as "all" | "7" | "30")}
               >
@@ -93,9 +97,9 @@ export function Dashboard({ jobs, onNewJob, onOpenJob, insights }: Props) {
                 <option value="30">Last 30 days</option>
               </select>
             </label>
-            <label className="row">
+            <label>
               Track
-              <select value={trackFilter} onChange={(e) => setTrackFilter(e.target.value)}>
+              <select aria-label="Track" value={trackFilter} onChange={(e) => setTrackFilter(e.target.value)}>
                 <option value="all">All tracks</option>
                 {trackOptions.map((track) => (
                   <option value={track} key={track}>
@@ -104,9 +108,13 @@ export function Dashboard({ jobs, onNewJob, onOpenJob, insights }: Props) {
                 ))}
               </select>
             </label>
-            <label className="row">
+            <label>
               Status
-              <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <select
+                aria-label="Status"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
                 <option value="all">All status</option>
                 {statusOptions.map((status) => (
                   <option value={status} key={status}>
@@ -117,36 +125,48 @@ export function Dashboard({ jobs, onNewJob, onOpenJob, insights }: Props) {
             </label>
           </div>
         </div>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Role</th>
-              <th>Track</th>
-              <th>Status</th>
-              <th>Fit</th>
-              <th>Updated</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredJobs.length === 0 ? (
+        <div className="table-wrapper">
+          <table className="table">
+            <thead>
               <tr>
-                <td colSpan={6}>No jobs yet. Generate your first packet.</td>
+                <th scope="col">Company</th>
+                <th scope="col">Role</th>
+                <th scope="col">Track</th>
+                <th scope="col">Status</th>
+                <th scope="col">Fit</th>
+                <th scope="col">Updated</th>
+                <th scope="col">Actions</th>
               </tr>
-            ) : (
-              filteredJobs.map((job) => (
-                <tr key={job.id} className="clickable-row" onClick={() => onOpenJob(job.id)}>
-                  <td>{job.company}</td>
-                  <td>{job.role}</td>
-                  <td>{job.track ?? "-"}</td>
-                  <td>{job.status}</td>
-                  <td>{job.fitTotal ?? "-"}</td>
-                  <td>{new Date(job.updatedAt).toLocaleString()}</td>
+            </thead>
+            <tbody>
+              {filteredJobs.length === 0 ? (
+                <tr>
+                  <td colSpan={7}>No jobs yet. Generate your first packet.</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filteredJobs.map((job) => (
+                  <tr key={job.id}>
+                    <td>{job.company}</td>
+                    <td>{job.role}</td>
+                    <td>{job.track ?? "-"}</td>
+                    <td>{job.status}</td>
+                    <td>{job.fitTotal ?? "-"}</td>
+                    <td>{new Date(job.updatedAt).toLocaleString()}</td>
+                    <td>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => onOpenJob(job.id)}
+                        aria-label={`Open packet for ${job.company} ${job.role}`}
+                      >
+                        Open
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="card">

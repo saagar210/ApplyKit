@@ -137,6 +137,24 @@ Record for each run:
 - `decision`:
   - go (hardening cycle complete; residual transitive Rust advisories remain tracked and time-bound)
 
+## Final Closure Snapshot (2026-03-01)
+
+- `operator`: codex-session
+- `date_utc`: 2026-03-01T14:48:00Z
+- `git_ref`: 523b0706cbdb141110feed42f7680a143233b195
+- `verify_log_path`:
+  - `docs/evidence/security-revalidation-2026-03-01-verify.log`
+- `security_audit_result`:
+  - canonical strict audit: pass (`docs/evidence/security-revalidation-2026-03-01-canonical-audit.log`)
+  - baseline no-ignore scan: expected non-zero with informational advisories (`docs/evidence/security-revalidation-2026-03-01-baseline.json`)
+  - advisory mapping drift: none (`docs/evidence/security-revalidation-2026-03-01.md`)
+- `ui_accessibility_result`:
+  - unit a11y + responsive suites: pass
+  - Playwright a11y smoke: pass
+  - manual contrast audit: pass (`docs/ui-contrast-audit-2026-03-01.md`)
+- `decision`:
+  - go (final closure gates green; no release-blocking follow-ups remain)
+
 ## Golden Path
 1. `pnpm -C ui install --frozen-lockfile`
 2. `bash ./.codex/scripts/run_verify_commands.sh`
