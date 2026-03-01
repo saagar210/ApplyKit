@@ -96,6 +96,29 @@ Record for each run:
 - `decision`:
   - go (Phase 4 complete; proceed to Phase 5 prep)
 
+## Operational Follow-up Snapshot (2026-02-28)
+
+- `operator`: codex-session
+- `date_utc`: 2026-02-28T22:20:00Z
+- `git_ref`: 4b7e653567ab9a64b845dfa024f0a8da4948785a
+- `verify_log_path`:
+  - /tmp/applykit_next_steps_full_verify_2026-02-28.log
+- `perf_artifact_path`:
+  - /tmp/applykit_next_steps_perf_foundation_2026-02-28.log
+  - /tmp/applykit_next_steps_perf_enforced_2026-02-28.log
+- `security_audit_result`:
+  - canonical strict audit: pass (`/tmp/applykit_next_steps_canonical_audit_2026-02-28.log`)
+  - baseline no-ignore scan: expected fail (`/tmp/applykit_next_steps_baseline_audit_2026-02-28.json`)
+  - advisory drift check: pass (0 stale, 0 missing IDs)
+- `parity_check_result`:
+  - pass (`/tmp/applykit_next_steps_ci_parity_2026-02-28.log`)
+- `governance_snapshot`:
+  - branch protection endpoint: `/tmp/applykit_next_steps_branch_protection_2026-02-28.json`
+  - rulesets endpoint: `/tmp/applykit_next_steps_rulesets_2026-02-28.json`
+  - open advisory issues snapshot: `/tmp/applykit_next_steps_open_issues_2026-02-28.json`
+- `decision`:
+  - go (operational readiness posture unchanged; residual advisory risk remains tracked in AK-301/302/303)
+
 ## Golden Path
 1. `pnpm -C ui install --frozen-lockfile`
 2. `bash ./.codex/scripts/run_verify_commands.sh`
