@@ -38,3 +38,7 @@
 ## Decision
 - Operational readiness posture remains `go` for current scope.
 - Residual security risk remains time-bound and tracked through AK-301/302/303.
+
+## Later Outcome Note (2026-03-01)
+- This file is a point-in-time snapshot from 2026-02-28.
+- AK-301/302/303 were later closed on 2026-03-01 under AK-304 residual-risk acceptance, with explicit reopen triggers tied to future compatible dependency updates.
