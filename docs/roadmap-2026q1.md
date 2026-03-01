@@ -66,6 +66,15 @@
   - Evidence: rollback branch and governance snapshots captured pre-cutover.
   - Evidence: post-cutover stabilization report published in `docs/repo-flattening-post-cutover-stabilization-2026-02-22.md`.
 
+### Operational Continuity Revalidation (2026-02-28)
+- Status: complete
+  - Evidence: full root verification command chain passed (`/tmp/applykit_next_steps_full_verify_2026-02-28.log`).
+  - Evidence: perf foundation and perf enforced checks passed (`/tmp/applykit_next_steps_perf_foundation_2026-02-28.log`, `/tmp/applykit_next_steps_perf_enforced_2026-02-28.log`).
+  - Evidence: canonical strict audit passed and baseline no-ignore advisory set stayed aligned (18 active, 0 stale, 0 missing) (`/tmp/applykit_next_steps_canonical_audit_2026-02-28.log`, `/tmp/applykit_next_steps_baseline_audit_2026-02-28.json`).
+  - Evidence: CI parity check passed (`/tmp/applykit_next_steps_ci_parity_2026-02-28.log`).
+  - Evidence: branch protection and rulesets snapshots refreshed (`/tmp/applykit_next_steps_branch_protection_2026-02-28.json`, `/tmp/applykit_next_steps_rulesets_2026-02-28.json`).
+  - Follow-up status: advisory remediation issues remain open and owned (AK-301 [#7](https://github.com/saagar210/ApplyKit/issues/7), AK-302 [#8](https://github.com/saagar210/ApplyKit/issues/8), AK-303 [#9](https://github.com/saagar210/ApplyKit/issues/9)).
+
 ## Status Tracking Fields
 For each weekly checkpoint capture:
 - `status`: not started | in progress | blocked | complete
